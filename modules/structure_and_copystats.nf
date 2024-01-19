@@ -5,7 +5,7 @@ tuple val(samples), path(files)
    
   shell:
   '''
-    mkdir -p !{samples.projectResultsDir}/{alignment,qc,variants/{gVCF,GAVIN}}
+    mkdir -p !{samples.projectResultsDir}/{alignment,qc,variants/{gVCF,sv,cnv}}
     rsync -av "!{samples.analysisFolder}/stats.tsv" "!{samples.projectResultsDir}/qc/"
   '''
 
