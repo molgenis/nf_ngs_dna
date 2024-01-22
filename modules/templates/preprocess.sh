@@ -25,8 +25,33 @@ then
     done
     rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi
+if [[ -f "!{samples.externalSampleID}.sv.vcf.gz" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}.sv.vcf.gz"* "!{samples.projectResultsDir}/variants/sv/"
+fi
+if [[ -f "!{samples.externalSampleID}.cnv.vcf.gz" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}"*cnv* "!{samples.projectResultsDir}/variants/cnv/"
+fi
     
 if [[ -f "!{samples.externalSampleID}.html" ]]
 then
-    rsync -Lv "!{samples.externalSampleID}"*.{bed,json,html} "!{samples.projectResultsDir}/qc/"
+    rsync -Lv "!{samples.externalSampleID}"*.{bed,json,html,seg,bw} "!{samples.projectResultsDir}/qc/"
+fi
+
+if [[ -f "!{samples.externalSampleID}.seg" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}"*seg* "!{samples.projectResultsDir}/qc/"
+fi
+if [[ -f "!{samples.externalSampleID}.target.counts.gz" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}"*target.counts* "!{samples.projectResultsDir}/qc/"
+fi
+if [[ -f "!{samples.externalSampleID}.tn.bw" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}"*tn.{bw,tsv.gz} "!{samples.projectResultsDir}/qc/"
+fi
+if [[ -f "!{samples.externalSampleID}.improper.pairs.bw" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}.improper.pairs.bw" "!{samples.projectResultsDir}/qc/"
 fi
