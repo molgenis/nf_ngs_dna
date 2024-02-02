@@ -20,7 +20,7 @@ def find_file(sample) {
 
     String path=params.tmpDataDir + sample.gsBatch + "/Analysis/" + sample.GS_ID + "-" + sample.originalproject + "-" + sample.sampleProcessStepID
     sample.files = file(path+"/*")
-    sample.analysisFolder="/groups/umcg-gst/tmp05/" + sample.gsBatch + "/Analysis/"
+    sample.analysisFolder=params.tmpDataDir + sample.gsBatch + "/Analysis/"
     sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"+sample.project+"/run01/results/"
     sample.combinedIdentifier= file(path).getBaseName()
 

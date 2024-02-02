@@ -1,1 +1,1 @@
-# nf-ngs_dna
+# nf_ngs_dna
