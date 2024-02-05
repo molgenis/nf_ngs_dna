@@ -12,6 +12,7 @@ log.info """\
          .stripIndent()
 
 include { structure_and_copystats } from './modules/structure_and_copystats'
+include { process_dragen_trendanalysis } from './modules/process_dragen_trendanalysis'
 include { preprocess } from './modules/preprocess'
 include { capture_and_reheader } from './modules/capture_and_reheader'
 include { forcedcalls } from './modules/forcedcalls'
@@ -20,7 +21,7 @@ def find_file(sample) {
 
     String path=params.tmpDataDir + sample.gsBatch + "/Analysis/" + sample.GS_ID + "-" + sample.originalproject + "-" + sample.sampleProcessStepID
     sample.files = file(path+"/*")
-    sample.analysisFolder="/groups/umcg-gst/tmp05/" + sample.gsBatch + "/Analysis/"
+    sample.analysisFolder=params.tmpDataDir + sample.gsBatch + "/Analysis/"
     sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"+sample.project+"/run01/results/"
     sample.combinedIdentifier= file(path).getBaseName()
 
@@ -36,9 +37,14 @@ workflow {
 
   ch_input.collect()
   | structure_and_copystats
+  
+  ch_input.collect()
+  | process_dragen_trendanalysis
 
   ch_input
   | forcedcalls
   | preprocess
   | capture_and_reheader
+
+  
 }

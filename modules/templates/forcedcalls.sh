@@ -12,7 +12,7 @@ else
 	fasta="!{params.reference_GRCh37}"
 fi
 
-if [[ -f "!{samples.combinedIdentifier}.bam" ]]
+if [[ -e "!{samples.combinedIdentifier}.bam" ]]
 then
 	bcftools mpileup \
 	-Ou -f "${fasta}" "!{samples.combinedIdentifier}.bam" -R "!{params.dataDir}/UMCG/concordanceCheckSnps_!{samples.build}.bed" \
