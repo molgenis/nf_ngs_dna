@@ -18,13 +18,13 @@ bgzip -c -f "!{samples.externalSampleID}.variant.calls.genotyped.vcf" > "!{sampl
 tabix -p vcf "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 rsync -Lv "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"* "!{samples.projectResultsDir}/variants/"
 
-if [[ -f "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
+if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
 then
     rename ".gvcf.gz" ".g.vcf.gz" "!{samples.externalSampleID}.hard-filtered.gvcf.gz"*
     rsync -Lv "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
 fi
 
-if [[ -f "!{samples.externalSampleID}.bam" ]]
+if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
     for i in "!{samples.externalSampleID}.bam"*
     do  
@@ -32,33 +32,33 @@ then
     done
     rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi
-if [[ -f "!{samples.externalSampleID}.sv.vcf.gz" ]]
+if [[ -e "!{samples.externalSampleID}.sv.vcf.gz" ]]
 then
     rsync -Lv "!{samples.externalSampleID}.sv.vcf.gz"* "!{samples.projectResultsDir}/variants/sv/"
 fi
-if [[ -f "!{samples.externalSampleID}.cnv.vcf.gz" ]]
+if [[ -e "!{samples.externalSampleID}.cnv.vcf.gz" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*cnv* "!{samples.projectResultsDir}/variants/cnv/"
 fi
     
-if [[ -f "!{samples.externalSampleID}.html" ]]
+if [[ -e "!{samples.externalSampleID}.html" ]]
 then
-    rsync -Lv "!{samples.externalSampleID}"*.{bed,json,html,seg,bw} "!{samples.projectResultsDir}/qc/"
+    rsync -Lv "!{samples.externalSampleID}"*.{bed,json,html} "!{samples.projectResultsDir}/qc/"
 fi
 
-if [[ -f "!{samples.externalSampleID}.seg" ]]
+if [[ -e "!{samples.externalSampleID}.seg" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*seg* "!{samples.projectResultsDir}/qc/"
 fi
-if [[ -f "!{samples.externalSampleID}.target.counts.gz" ]]
+if [[ -e "!{samples.externalSampleID}.target.counts.gz" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*target.counts* "!{samples.projectResultsDir}/qc/"
 fi
-if [[ -f "!{samples.externalSampleID}.tn.bw" ]]
+if [[ -e "!{samples.externalSampleID}.tn.bw" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*tn.{bw,tsv.gz} "!{samples.projectResultsDir}/qc/"
 fi
-if [[ -f "!{samples.externalSampleID}.improper.pairs.bw" ]]
+if [[ -e "!{samples.externalSampleID}.improper.pairs.bw" ]]
 then
     rsync -Lv "!{samples.externalSampleID}.improper.pairs.bw" "!{samples.projectResultsDir}/qc/"
 fi

@@ -12,6 +12,7 @@ log.info """\
          .stripIndent()
 
 include { structure_and_copystats } from './modules/structure_and_copystats'
+include { process_dragen_trendanalysis } from './modules/process_dragen_trendanalysis'
 include { preprocess } from './modules/preprocess'
 include { capture_and_reheader } from './modules/capture_and_reheader'
 include { forcedcalls } from './modules/forcedcalls'
@@ -36,9 +37,14 @@ workflow {
 
   ch_input.collect()
   | structure_and_copystats
+  
+  ch_input.collect()
+  | process_dragen_trendanalysis
 
   ch_input
   | forcedcalls
   | preprocess
   | capture_and_reheader
+
+  
 }
