@@ -12,7 +12,6 @@ then
     bedfile="!{params.bedfile_GRCh38}"
 fi
 
-
 bcftools annotate -x 'FORMAT/AF,FORMAT/F1R2,FORMAT/F2R1,FORMAT/GP' "!{samples.externalSampleID}.hard-filtered.vcf.gz" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf"
 bgzip -c -f "!{samples.externalSampleID}.variant.calls.genotyped.vcf" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 tabix -p vcf "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
@@ -39,13 +38,11 @@ fi
 if [[ -e "!{samples.externalSampleID}.cnv.vcf.gz" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*cnv* "!{samples.projectResultsDir}/variants/cnv/"
-fi
-    
+fi 
 if [[ -e "!{samples.externalSampleID}.html" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*.{bed,json,html} "!{samples.projectResultsDir}/qc/"
 fi
-
 if [[ -e "!{samples.externalSampleID}.seg" ]]
 then
     rsync -Lv "!{samples.externalSampleID}"*seg* "!{samples.projectResultsDir}/qc/"
