@@ -7,7 +7,7 @@ rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.
 
 if [[ -e "!{samples.externalSampleID}.hard-filtered.vcf.gz" ]]
 then
-    rsync -Lv "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"* "!{samples.projectResultsDir}/variants/"
+    rsync -Lv "!{samples.externalSampleID}.hard-filtered.vcf.gz"* "!{samples.projectResultsDir}/variants/"
 fi
 if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
 then
@@ -15,14 +15,6 @@ then
     rsync -Lv "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
 fi
 
-if [[ -e "!{samples.externalSampleID}.bam" ]]
-then
-    for i in "!{samples.externalSampleID}.bam"*
-    do  
-        mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
-    done
-    rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
-fi
 if [[ -e "!{samples.externalSampleID}.sv.vcf.gz" ]]
 then
     rsync -Lv "!{samples.externalSampleID}.sv.vcf.gz"* "!{samples.projectResultsDir}/variants/sv/"
@@ -33,7 +25,7 @@ then
 fi 
 if [[ -e "!{samples.externalSampleID}.html" ]]
 then
-    rsync -Lv "!{samples.externalSampleID}"*.{bed,json,html} "!{samples.projectResultsDir}/qc/"
+    rsync -Lv "!{samples.externalSampleID}"*.{json,html} "!{samples.projectResultsDir}/qc/"
 fi
 if [[ -e "!{samples.externalSampleID}.seg" ]]
 then
@@ -50,4 +42,12 @@ fi
 if [[ -e "!{samples.externalSampleID}.improper.pairs.bw" ]]
 then
     rsync -Lv "!{samples.externalSampleID}.improper.pairs.bw" "!{samples.projectResultsDir}/qc/"
+fi
+if [[ -e "!{samples.externalSampleID}.bam" ]]
+then
+    for i in "!{samples.externalSampleID}.bam"*
+    do  
+        mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+    done
+    rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi

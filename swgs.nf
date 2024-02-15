@@ -13,10 +13,7 @@ log.info """\
 
 include { structure_and_copystats } from './modules/structure_and_copystats'
 include { process_dragen_trendanalysis } from './modules/process_dragen_trendanalysis'
-include { preprocess } from './modules/preprocess'
-include { capture_and_reheader } from './modules/capture_and_reheader'
-include { forcedcalls } from './modules/forcedcalls'
-include { coverage } from './modules/coverage'
+include { preprocess_swgs } from './modules/preprocess_swgs'
 
 def find_file(sample) {
 
