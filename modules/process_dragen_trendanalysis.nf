@@ -2,10 +2,10 @@ process process_dragen_trendanalysis {
 publishDir "$samples.projectResultsDir/qc/statistics/", mode: 'copy', overwrite: true
 
 input: 
-    tuple val(samples), path(files)
+  val(samples)
 
 output:
-    tuple val(samples), path(dragenInfoCSV),path(dragenCSV)
+  tuple val(samples), path(dragenInfoCSV),path(dragenCSV)
 
 shell:
   
