@@ -2,7 +2,7 @@ process coverage {
 
     publishDir "$samples.projectResultsDir/coverage", mode: 'copy', overwrite: true
     
-    module = ['HTSlib/1.16-GCCcore-11.3.0','BCFtools/1.16-GCCcore-11.3.0','gVCF2BED/1.0.0-GCCcore-11.3.0']
+    module = ['HTSlib/1.16-GCCcore-11.3.0','BCFtools/1.16-GCCcore-11.3.0','gVCF2BED/1.1.0-GCCcore-11.3.0']
 
     input: 
     tuple val(samples), path(files)
@@ -14,7 +14,7 @@ process coverage {
   
   coverageOutput="${samples.externalSampleID}.PseudoExome.CoverageOutput.csv"
   coveragePerTarget="${samples.externalSampleID}.pseudoExome.coveragePerTarget.txt"
-  coverageStatistics="${samples.externalSampleID}.incl_TotalAvgCoverage_TotalPercentagebelow20x.txt"
+  coverageStatistics="${samples.externalSampleID}.incl_TotalAvgCoverage_TotalPercentagebelow10x.txt"
 
   template 'coverage.sh'
 
