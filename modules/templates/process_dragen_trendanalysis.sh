@@ -9,5 +9,5 @@ echo -e 'Sample\tBatchName\ttotal_bases\tfrac_duplicates\tfrac_min_20x_coverage\
 
 seq_batch=!{samples.gsBatch}
 file_date=$(date -r "!{samples.projectResultsDir}/qc/stats.tsv" '+%d/%m/%Y')
-awk -v s=${seq_batch} 'BEGIN {FS="\t"}{OFS="\t"}{if (NR>1){print $1,s,$1,$3,$5,$7,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22}}' "!{samples.projectResultsDir}/qc/stats.tsv" >>  "!{samples.project}.Dragen.csv"
+awk -v s=${seq_batch} 'BEGIN {FS="\t"}{OFS="\t"}{if (NR>1){print $1,s,$3,$5,$7,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24}}' "!{samples.projectResultsDir}/qc/stats.tsv" >>  "!{samples.project}.Dragen.csv"
 awk -v s=${seq_batch} -v f="${file_date}" 'BEGIN {FS="\t"}{OFS=","}{if (NR>1){print $1,s,f}}' "!{samples.projectResultsDir}/qc/stats.tsv" >> "!{samples.project}.Dragen_runinfo.csv"
