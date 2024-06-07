@@ -1,6 +1,6 @@
 process forcedcalls {
 
-	publishDir "$samples.projectResultsDir/variants", mode: 'copy', overwrite: true, pattern: '*.concordanceCheckCalls.vcf'
+	publishDir "$samples.projectResultsDir/concordanceCheckSnps/", mode: 'copy', overwrite: true, pattern: '*.concordanceCheckCalls.vcf'
 	module = ['BCFtools/1.16-GCCcore-11.3.0']
 	label 'forcedcalls'
 
