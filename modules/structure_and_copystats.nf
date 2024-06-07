@@ -8,7 +8,7 @@ output:
    
   shell:
   '''
-    mkdir -m 2770 -p !{samples.projectResultsDir}/{alignment,qc,coverage,variants/{gVCF,sv,cnv}}
+    mkdir -m 2770 -p !{samples.projectResultsDir}/{alignment,qc,coverage,concordanceCheckSnps,variants/{gVCF,sv,cnv}}
     rsync -av "!{samples.analysisFolder}/stats.tsv" "!{samples.projectResultsDir}/qc/"
     rsync -av "!{params.samplesheet}" "!{samples.projectResultsDir}/"
   '''
