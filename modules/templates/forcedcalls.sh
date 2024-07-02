@@ -19,7 +19,8 @@ then
 	| bcftools call -m -Ob -o "!{samples.externalSampleID}.concordanceCheckCalls.tmp.vcf"
 
 	echo -e "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" > "!{samples.externalSampleID}.newVCFHeader.txt"
-	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.concordanceCheckCalls.tmp.vcf" > "!{samples.externalSampleID}.concordanceCheckCalls.vcf"
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.concordanceCheckCalls.tmp.vcf" \
+		> "!{samples.externalSampleID}.concordanceCheckCalls.vcf"
 else
 	echo "The !{samples.combinedIdentifier}.bam does not exist"
 fi

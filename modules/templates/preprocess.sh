@@ -53,9 +53,18 @@ then
 fi
 if [[ -e "!{samples.externalSampleID}.tn.bw" ]]
 then
-    rsync -Lv "!{samples.externalSampleID}"*tn.{bw,tsv.gz} "!{samples.projectResultsDir}/qc/"
+    rsync -Lv "!{samples.externalSampleID}"*tn.tsv.gz "!{samples.projectResultsDir}/qc/"
+		rsync -Lv "!{samples.externalSampleID}"*.bw "!{samples.projectResultsDir}/qc/"
 fi
 if [[ -e "!{samples.externalSampleID}.improper.pairs.bw" ]]
 then
     rsync -Lv "!{samples.externalSampleID}.improper.pairs.bw" "!{samples.projectResultsDir}/qc/"
+fi
+if [[ -e "!{samples.externalSampleID}.ploidy.vcf.gz" ]]
+then
+    rsync -Lv "!{samples.externalSampleID}.ploidy.vcf.gz"* "!{samples.projectResultsDir}/variants/"
+fi
+if [[ -e "sv" ]]
+then
+    rsync -Lv "sv" "!{samples.projectResultsDir}/qc/sv_!{samples.externalSampleID}"
 fi
