@@ -5,6 +5,8 @@ set -eu
 
 rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
 
+grep "!{samples.combinedIdentifier}" "!{samples.projectResultsDir}/qc/stats.tsv" | perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|" >>  "!{samples.projectResultsDir}/qc/statsRenamed.tsv"
+
 if [[ -e "!{samples.externalSampleID}.hard-filtered.vcf.gz" ]]
 then
     rsync -Lv "!{samples.externalSampleID}.hard-filtered.vcf.gz"* "!{samples.projectResultsDir}/variants/"
