@@ -50,6 +50,14 @@ if [[ -n "${statsFileColumnOffsets['frac_min_20x_coverage']+isset}" ]]
 then
 	fracMin20xCoverageFieldIndex=$((${statsFileColumnOffsets['frac_min_20x_coverage']} + 1))
 fi
+if [[ -n "${statsFileColumnOffsets['mean_alignment_coverage']+isset}" ]]
+then
+	mean_alignment_coverageCoverageFieldIndex=$((${statsFileColumnOffsets['mean_alignment_coverage']} + 1))
+fi
+if [[ -n "${statsFileColumnOffsets['coverage_uniformity']+isset}" ]]
+then
+	coverage_uniformityCoverageFieldIndex=$((${statsFileColumnOffsets['coverage_uniformity']} + 1))
+fi
 
 if [[ !{samples.AnalysisFilter} == *"sWGS"* ]]
 then
@@ -69,7 +77,7 @@ then
 		'BEGIN {FS="\t"}{OFS="\t"}{if (NR>1){print $s1,s,$s2,$s3,$s4,$s5,$s6,$s7,$s8,$s9,$s10}}' "!{samples.projectResultsDir}/qc/stats.tsv" >>  "!{samples.project}.Dragen.csv"
 
 else
-	echo -e 'Sample\tBatchName\ttotal_bases\ttotal_reads\thq_mapped_reads\tduplicate_readpairs\tbases_on_target\tmean_insert_size\tfrac_min_1x_coverage\tfrac_min_10x_coverage\tfrac_min_50x_coverage\tmean_coverage_genome'  > "!{samples.project}.Dragen.csv"
+	echo -e 'Sample\tBatchName\ttotal_bases\ttotal_reads\thq_mapped_reads\tduplicate_readpairs\tbases_on_target\tmean_insert_size\tfrac_min_1x_coverage\tfrac_min_10x_coverage\tfrac_min_50x_coverage\tmean_coverage_genome\tmean_alignment_coverage\tcoverage_uniformity'  > "!{samples.project}.Dragen.csv"
 
 	awk -v s1=${sampleNameFieldIndex} \
 		-v s=${seq_batch} \
@@ -83,7 +91,9 @@ else
 		-v s9=${fracMin10xCoverageFieldIndex} \
 		-v s10=${fracMin50xCoverageFieldIndex} \
 		-v s11=${meanCoverageGenomeFieldIndex} \
-	'BEGIN {FS="\t"}{OFS="\t"}{if (NR>1){print $s1,s,$s2,$s3,$s4,$s5,$s6,$s7,$s8,$s9,$s10,$s11}}' "!{samples.projectResultsDir}/qc/stats.tsv" >>  "!{samples.project}.Dragen.csv"
+		-v s12=${mean_alignment_coverageCoverageFieldIndex} \
+		-v s13=${coverage_uniformityCoverageFieldIndex} \
+	'BEGIN {FS="\t"}{OFS="\t"}{if (NR>1){print $s1,s,$s2,$s3,$s4,$s5,$s6,$s7,$s8,$s9,$s10,$s11,$s12,$s13}}' "!{samples.projectResultsDir}/qc/stats.tsv" >>  "!{samples.project}.Dragen.csv"
 
 fi
 echo -e 'Sample,Run,Date' > "!{samples.project}.Dragen_runinfo.csv"
