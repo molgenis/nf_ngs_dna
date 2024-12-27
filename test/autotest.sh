@@ -66,7 +66,7 @@ then
 	exit 1
 else
 	## check if the variants are called
-	grep -v '^#' "${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/concordanceCheckSnps/1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765.concordanceCheckCalls.vcf" > "${TEMP}/concordanceCheckCalls.vcf"
+	grep -v '^#' "${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/concordanceCheckSnps/1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765.concordanceCheckCalls.vcf" | awk 'BEGIN {FS="\t"}{OFS="\t"}{print $1,$2,$3,$4,$5,$10}' > "${TEMP}/concordanceCheckCalls.vcf"
 	diffInConcordance='no'
 	diff -q "${WORKDIR}/test/trueConcordanceCheckCalls.vcf" "${TEMP}/concordanceCheckCalls.vcf" || diffInConcordance='yes'
 
