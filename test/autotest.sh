@@ -102,9 +102,5 @@ else
 	fi
 fi
 
-
 echo -e "\n Test succeeded!!\n"
 fi
-
-
-
