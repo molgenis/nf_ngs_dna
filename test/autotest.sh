@@ -6,7 +6,7 @@ PULLREQUEST=$1
 checkout='nf_ngs_dna'
 pipeline='nf_ngs_dna'
 
-TMPDIRECTORY='/groups/umcg-gst/tmp07'
+TMPDIRECTORY='/groups/umcg-gst/tmp0'
 GS_RUN='105856-001'
 PROJECT="GS_001-WGS_v1"
 WORKDIR="${TMPDIRECTORY}/tmp/${pipeline}/betaAutotest/"
@@ -77,21 +77,22 @@ else
 		cat "${WORKDIR}/test/trueConcordanceCheckCalls.vcf"
 		echo -e "\n\n NEW FILE:"
 		cat "${TEMP}/concordanceCheckCalls.vcf"
+		exit 1
 	fi
 fi
 
 # check if .seg.bw file is there
 if [[ ! -f "${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/variants/cnv/1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765.seg.bw" ]]
 then
-    	echo "variants/cnv/1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765.seg.bw does not exist"
-        exit 1
+	echo "variants/cnv/1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765.seg.bw does not exist"
+	exit 1
 fi
 
 # check if stats file column is converted correctly
 if [[ ! -f "${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/qc/stats.tsv" ]]
 then
-    	echo "qc/stats.tsv does not exist"
-        exit 1
+	echo "qc/stats.tsv does not exist"
+	exit 1
 else
 	if [[ $(awk '{ if (NR>1){ print $1} }' "${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/qc/stats.tsv") != '1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765' ]]
 	then
@@ -99,6 +100,7 @@ else
 		echo -e "The first column of ${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/qc/stats.tsv should have been:\n1111111_123456_HG001_0000000_GS001A_WGS_000001_12348765, but it is:["
 		awk '{if (NR>1){print $1}}' "${TMPDIRECTORY}/projects/NGS_DNA/${PROJECT}/run01/results/qc/stats.tsv"
 		echo "]"
+		exit 1
 	fi
 fi
 
