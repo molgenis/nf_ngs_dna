@@ -1,4 +1,4 @@
-process forcedcalls {
+process forcedcalls_inhouse {
 
 	publishDir "$samples.projectResultsDir/concordanceCheckSnps/", mode: 'copy', overwrite: true, pattern: '*.concordanceCheckCalls.vcf'
 	module = ['BCFtools/1.16-GCCcore-11.3.0']
@@ -13,7 +13,7 @@ process forcedcalls {
     shell:
     concordanceCheckCallsVcf="${samples.externalSampleID}.concordanceCheckCalls.vcf"
 
-    template 'forcedcalls.sh'
+    template 'forcedcalls_inhouse.sh'
   
     stub:
     concordanceCheckCallsVcf="${samples.externalSampleID}.concordanceCheckCalls.vcf"

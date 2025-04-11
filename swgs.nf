@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 log.info """\
-         T E S T - N F   P I P E L I N E
+         S W G S   P I P E L I N E
          ===================================
          samplesheet  : ${params.samplesheet}
          group        : ${params.group}
@@ -16,10 +16,13 @@ include { process_dragen_trendanalysis } from './modules/process_dragen_trendana
 include { preprocess_swgs } from './modules/preprocess_swgs'
 
 def find_file(sample) {
-
-    String path=params.tmpDataDir + sample.gsBatch + "/Analysis/" + sample.GS_ID + "-" + sample.originalproject + "-" + sample.sampleProcessStepID
+    def batch = sample.gsBatch
+    if (sample.gsBatchFolderName != null){
+      batch=sample.gsBatchFolderName
+    }
+    String path=params.tmpDataDir + batch + "/Analysis/" + sample.GS_ID + "-" + sample.project + "-" + sample.sampleProcessStepID
     sample.files = file(path+"/*")
-    sample.analysisFolder=params.tmpDataDir + sample.gsBatch + "/Analysis/"
+    sample.analysisFolder=params.tmpDataDir + batch + "/Analysis/"
     sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"+sample.project+"/run01/results/"
     sample.combinedIdentifier= file(path).getBaseName()
 
