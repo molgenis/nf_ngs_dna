@@ -3,9 +3,7 @@
 set -o pipefail
 set -eu
 
-bedfile=!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed
-
-
+bedfile="!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed"
 
 if [[ "!{samples.build}" == "GRCh38" ]]
 then

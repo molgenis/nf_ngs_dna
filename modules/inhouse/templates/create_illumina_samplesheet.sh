@@ -2,8 +2,8 @@
 
 set -o pipefail
 set -eu
-#sampleSheet=!{params.samplesheet}
-sampleSheet=!{params.samplesheet}
+
+sampleSheet="!{params.samplesheet}"
 declare -a sampleSheetColumnNames=()
 declare -A sampleSheetColumnOffsets=()
 declare  sampleSheetFieldIndex

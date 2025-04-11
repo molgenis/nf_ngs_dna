@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 log.info """\
-         T E S T - N F   P I P E L I N E
+         P O S T  D R A G E N  P I P E L I N E
          ===================================
          samplesheet  : ${params.samplesheet}
          group        : ${params.group}
