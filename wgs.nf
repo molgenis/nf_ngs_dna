@@ -19,10 +19,14 @@ include { forcedcalls } from './modules/forcedcalls'
 include { coverage } from './modules/coverage'
 
 def find_file(sample) {
-
-    String path=params.tmpDataDir + sample.gsBatch + "/Analysis/" + sample.GS_ID + "-" + sample.originalproject + "-" + sample.sampleProcessStepID
+    batch=sample.gsBatch
+    if (sample.gsBatchFolderName != "null"){
+      batch=sample.gsBatchFolderName
+    }
+    String path=params.tmpDataDir + batch + "/Analysis/" + sample.GS_ID + "-" + sample.project + "-" + sample.sampleProcessStepID
     sample.files = file(path+"/*")
-    sample.analysisFolder=params.tmpDataDir + sample.gsBatch + "/Analysis/"
+
+    sample.analysisFolder=params.tmpDataDir + batch + "/Analysis/"
     sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"+sample.project+"/run01/results/"
     sample.combinedIdentifier= file(path).getBaseName()
 

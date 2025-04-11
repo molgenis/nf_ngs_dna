@@ -1,4 +1,4 @@
-process preprocess {
+process preprocess_inhouse {
 
   module = ['BEDTools/2.30.0-GCCcore-11.3.0','HTSlib/1.16-GCCcore-11.3.0','BCFtools/1.16-GCCcore-11.3.0']
 
@@ -11,7 +11,7 @@ process preprocess {
   shell:
   genotypedVCF="${samples.externalSampleID}.variant.calls.genotyped.vcf"
 
-  template 'preprocess.sh'
+  template 'preprocess_inhouse.sh'
 
   stub:
   genotypedVCF="${samples.externalSampleID}.variant.calls.genotyped.vcf"

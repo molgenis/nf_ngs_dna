@@ -3,24 +3,27 @@
 set -o pipefail
 set -eu
 
-rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
-
 bedfile=!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed
 
-grep "!{samples.combinedIdentifier}" "!{samples.projectResultsDir}/qc/stats.tsv" | perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|" >>  "!{samples.projectResultsDir}/qc/statsRenamed.tsv"
 
-perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}.cnv.igv_session.xml" > "!{samples.projectResultsDir}/qc/!{samples.externalSampleID}.cnv.igv_session.xml"
 
 if [[ "!{samples.build}" == "GRCh38" ]]
 then
     bedfile="!{params.bedfile_GRCh38}"
 fi
+echo "##intervals=[${bedfile}]" > "bedfile.txt"
 
-bcftools annotate -x 'FORMAT/AF,FORMAT/F1R2,FORMAT/F2R1,FORMAT/GP' "!{samples.externalSampleID}.hard-filtered.vcf.gz" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf"
+bcftools annotate -x 'FORMAT/AF,FORMAT/F1R2,FORMAT/F2R1,FORMAT/GP' "!{samples.externalSampleID}.hard-filtered.vcf.gz" | bcftools annotate -h "bedfile.txt" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf"
+
 bgzip -c -f "!{samples.externalSampleID}.variant.calls.genotyped.vcf" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 tabix -p vcf "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 rsync -Lv "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"* "!{samples.projectResultsDir}/variants/"
 
+
+if [[ -e "!{samples.externalSampleID}.cnv.igv_session.xml" ]]
+then
+	rsync -Lv "!{samples.externalSampleID}.cnv.igv_session.xml"  "!{samples.projectResultsDir}/qc/"
+fi
 #
 ## gVCF
 #
@@ -38,7 +41,6 @@ then
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
-	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi
 
 #
@@ -50,9 +52,7 @@ then
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
-	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi
-
 
 #
 ## sv

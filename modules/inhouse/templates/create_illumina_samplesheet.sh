@@ -3,7 +3,7 @@
 set -o pipefail
 set -eu
 #sampleSheet=!{params.samplesheet}
-sampleSheet=!{samplesheet}
+sampleSheet=!{params.samplesheet}
 declare -a sampleSheetColumnNames=()
 declare -A sampleSheetColumnOffsets=()
 declare  sampleSheetFieldIndex
@@ -32,9 +32,8 @@ laneFieldIndex=$((${sampleSheetColumnOffsets['lane']} + 1))
 flowcellFieldIndex=$((${sampleSheetColumnOffsets['flowcell']} + 1))
 barcode1FieldIndex=$((${sampleSheetColumnOffsets['barcode1']} + 1))
 barcode2FieldIndex=$((${sampleSheetColumnOffsets['barcode2']} + 1))
-barcode2FieldIndex=$((${sampleSheetColumnOffsets['project']} + 1))
-
 
 echo -e "[Data]\nFCID,Lane,Sample_ID,Index,Index2" > IlluminaSamplesheet.csv
 awk -v e=${externalSampleIDFieldIndex} -v l=${laneFieldIndex} -v f=${flowcellFieldIndex} -v b1=${barcode1FieldIndex} -v b2=${barcode2FieldIndex} 'BEGIN {FS=","}{OFS=","}{if (NR>1){print $f,$l,$e,$b1,$b2}}' "${sampleSheet}" >> IlluminaSamplesheet.csv
 echo "Illumina samplesheet created: IlluminaSamplesheet.csv"
+rawdata=$(basename "!{params.samplesheet}" '.csv')

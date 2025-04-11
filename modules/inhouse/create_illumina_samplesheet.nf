@@ -8,6 +8,7 @@ process create_illumina_samplesheet {
 
   shell:
 	illuminaSamplesheet="IlluminaSamplesheet.csv"
+  rawdataname="rawdataname"
 	template 'create_illumina_samplesheet.sh'
 
   stub:

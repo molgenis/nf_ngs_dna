@@ -11,9 +11,9 @@ log.info """\
          """
          .stripIndent()
 
-include { create_illumina_samplesheet } from './modules/create_illumina_samplesheet.nf'
-include { bcl2fastq } from './modules/bcl2fastq.nf'
-include { run_dragen } from './modules/run_dragen.nf'
+include { create_illumina_samplesheet } from './modules/inhouse/create_illumina_samplesheet.nf'
+include { bcl2fastq } from './modules/inhouse/bcl2fastq.nf'
+include { run_dragen } from './modules/inhouse/run_dragen.nf'
 
 
 

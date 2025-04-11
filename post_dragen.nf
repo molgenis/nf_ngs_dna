@@ -10,21 +10,17 @@ log.info """\
          tmpdir       : ${params.tmpdir}
          """
          .stripIndent()
-
 include { structure_and_copystats } from './modules/structure_and_copystats'
-include { process_dragen_trendanalysis } from './modules/process_dragen_trendanalysis'
-include { preprocess_swgs } from './modules/preprocess_swgs'
+include { forcedcalls_inhouse } from './modules/inhouse/forcedcalls_inhouse'
+include { preprocess_inhouse } from './modules/inhouse/preprocess_inhouse'
+include { coverage } from './modules/coverage'
 
 def find_file(sample) {
-    def batch = sample.gsBatch
-    if (sample.gsBatchFolderName != null){
-      batch=sample.gsBatchFolderName
-    }
-    String path=params.tmpDataDir + batch + "/Analysis/" + sample.GS_ID + "-" + sample.project + "-" + sample.sampleProcessStepID
+    runPrefix=sample.sequencingStartDate + "_" + sample.sequencer + "_" +sample.run + "_" + sample.flowcell
+    String path=params.tmpDataDir + "/results/" + runPrefix + "/Analysis/" + sample.externalSampleID
     sample.files = file(path+"/*")
-    sample.analysisFolder=params.tmpDataDir + batch + "/Analysis/"
-    sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"+sample.project+"/run01/results/"
-    sample.combinedIdentifier= file(path).getBaseName()
+    sample.analysisFolder=params.tmpDataDir + "/results/" + runPrefix + "/Analysis/"
+    sample.projectResultsDir=params.tmpDataDir+"/projects/POST_DRAGEN/"+sample.project+"/run01/results/"
 
     return sample
 }
@@ -38,9 +34,13 @@ workflow {
 
   ch_input.collect()
   | structure_and_copystats
-  | process_dragen_trendanalysis
-  
+
   ch_input
-  | preprocess_swgs
+  | forcedcalls_inhouse
+  | preprocess_inhouse
+  | set{ch_processed}
+  
+  ch_processed
+  | coverage
   
 }
