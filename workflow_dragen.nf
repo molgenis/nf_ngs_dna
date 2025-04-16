@@ -8,6 +8,7 @@ log.info """\
          samplesheet  : ${params.samplesheet}
          group        : ${params.group}
          tmpdir       : ${params.tmpdir}
+         cluster      : ${params.cluster}
          """
          .stripIndent()
 
