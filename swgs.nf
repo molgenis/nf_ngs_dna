@@ -17,7 +17,7 @@ include { preprocess_swgs } from './modules/preprocess_swgs'
 
 def find_file(sample) {
     def batch = sample.gsBatch
-    if (sample.gsBatchFolderName != null){
+    if (sample.gsBatchFolderName != ""){
       batch=sample.gsBatchFolderName
     }
     String path=params.tmpDataDir + batch + "/Analysis/" + sample.GS_ID + "-" + sample.project + "-" + sample.sampleProcessStepID
@@ -34,6 +34,7 @@ workflow {
   | splitCsv(header:true)
   | map { find_file(it) }
   | map { samples -> [ samples, samples.files ]}
+	| view
   | set { ch_input }
 
   ch_input.collect()

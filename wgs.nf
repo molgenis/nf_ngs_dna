@@ -20,7 +20,7 @@ include { coverage } from './modules/coverage'
 
 def find_file(sample) {
     batch=sample.gsBatch
-    if (sample.gsBatchFolderName != "null"){
+    if (sample.gsBatchFolderName != ""){
       batch=sample.gsBatchFolderName
     }
     String path=params.tmpDataDir + batch + "/Analysis/" + sample.GS_ID + "-" + sample.project + "-" + sample.sampleProcessStepID
