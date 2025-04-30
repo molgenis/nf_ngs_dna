@@ -4,6 +4,7 @@ set -o pipefail
 set -eu
 
 rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
+perl -pi -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}."*"md5"*
 
 if grep "!{samples.combinedIdentifier}" "!{samples.projectResultsDir}/qc/stats.tsv"
 then	

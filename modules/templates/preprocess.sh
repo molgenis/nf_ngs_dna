@@ -13,6 +13,7 @@ then
 fi
 
 perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}.cnv.igv_session.xml" > "!{samples.projectResultsDir}/qc/!{samples.externalSampleID}.cnv.igv_session.xml"
+perl -pi -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}."*"md5"*
 
 if [[ "!{samples.build}" == "GRCh38" ]]
 then
