@@ -5,6 +5,9 @@ set -eu
 
 rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
 
+echo -e "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" > "!{samples.externalSampleID}.newVCFHeader.txt"
+
+
 if grep "!{samples.combinedIdentifier}" "!{samples.projectResultsDir}/qc/stats.tsv"
 then	
 	grep "!{samples.combinedIdentifier}" "!{samples.projectResultsDir}/qc/stats.tsv" | perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|" >>  "!{samples.projectResultsDir}/qc/statsRenamed.tsv"
@@ -17,14 +20,7 @@ then
 	rsync -Lv "!{samples.externalSampleID}.hard-filtered.vcf.gz"* "!{samples.projectResultsDir}/variants/"
 fi
 
-#
-## gVCF
-#
-if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
-then
-	rename ".gvcf.gz" ".g.vcf.gz" "!{samples.externalSampleID}.hard-filtered.gvcf.gz"*
-	rsync -Lv "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
-fi
+
 #
 ## alignment
 #
@@ -32,9 +28,21 @@ if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
 	for i in "!{samples.externalSampleID}.bam"*
 	do  
+		echo "[mv $(readlink ${i}) \"!{samples.projectResultsDir}/alignment/]\""
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
 	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
+fi
+
+#
+## gVCF
+#
+if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
+then
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.hard-filtered.gvcf.gz" -o "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
+	md5sum "!{samples.externalSampleID}.hard-filtered.g.vcf.gz" > "!{samples.externalSampleID}.hard-filtered.g.vcf.gz.md5"
+	rsync -v "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
 fi
 
 #
@@ -50,8 +58,19 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.cnv.vcf.gz" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}"*cnv* "!{samples.projectResultsDir}/variants/cnv/"
-fi 
+
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.cnv.vcf.gz" -o "!{samples.externalSampleID}.cnv.reheadered.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.cnv.reheadered.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.cnv.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.cnv.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz.tbi"
+
+	md5sum "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz" > "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz.md5" 
+
+	rsync -Lv "!{samples.externalSampleID}.cnv.excluded_intervals.bed.gz" "!{samples.projectResultsDir}/variants/cnv/"
+	rsync -Lv "!{samples.externalSampleID}.cnv.gff3" "!{samples.projectResultsDir}/variants/cnv/"
+	
+
+fi
 if [[ -e "!{samples.externalSampleID}.target.counts.gz" ]]
 then
 	rsync -Lv "!{samples.externalSampleID}"*target.counts* "!{samples.projectResultsDir}/variants/cnv/"

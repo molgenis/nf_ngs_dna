@@ -18,6 +18,6 @@ bedtools intersect -header -a "!{genotypedVCF}.tmp" -b ${bedfile} > "!{genotyped
 
 bgzip -c -f "!{genotypedVCF}.captured.vcf" > "!{genotypedVCF}.captured.vcf.gz"
 tabix -p vcf "!{genotypedVCF}.captured.vcf.gz"
-rename .variant.calls.genotyped.vcf.captured.vcf .captured.vcf "!{genotypedVCF}.captured.vcf.gz"
+rename '.variant.calls.genotyped.vcf.captured.vcf' '.captured.vcf' "!{genotypedVCF}.captured.vcf.gz"
 
 touch "!{params.tmpDataDir}/logs/!{samples.project}/run01.nextflow_pipeline.finished"
