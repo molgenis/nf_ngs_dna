@@ -13,12 +13,13 @@ then
 fi
 
 perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}.cnv.igv_session.xml" > "!{samples.projectResultsDir}/qc/!{samples.externalSampleID}.cnv.igv_session.xml"
-perl -pi -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}."*"md5"*
 
 if [[ "!{samples.build}" == "GRCh38" ]]
 then
     bedfile="!{params.bedfile_GRCh38}"
 fi
+
+echo -e "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" > "!{samples.externalSampleID}.newVCFHeader.txt"
 
 bcftools annotate -x 'FORMAT/AF,FORMAT/F1R2,FORMAT/F2R1,FORMAT/GP' "!{samples.externalSampleID}.hard-filtered.vcf.gz" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf"
 bgzip -c -f "!{samples.externalSampleID}.variant.calls.genotyped.vcf" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
@@ -30,8 +31,10 @@ rsync -Lv "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"* "!{sampl
 #
 if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
 then
-	rename ".gvcf.gz" ".g.vcf.gz" "!{samples.externalSampleID}.hard-filtered.gvcf.gz"*
-	rsync -Lv "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.hard-filtered.gvcf.gz" -o "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
+	md5sum "!{samples.externalSampleID}.hard-filtered.g.vcf.gz" > "!{samples.externalSampleID}.hard-filtered.g.vcf.gz.md5"
+	rsync -v "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
 fi
 #
 ## alignment
@@ -71,8 +74,20 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.cnv.vcf.gz" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}"*cnv* "!{samples.projectResultsDir}/variants/cnv/"
+
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.cnv.vcf.gz" -o "!{samples.externalSampleID}.cnv.reheadered.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.cnv.reheadered.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.cnv.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.cnv.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz.tbi"
+
+	md5sum "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz" > "!{samples.projectResultsDir}/variants/cnv/!{samples.externalSampleID}.cnv.vcf.gz.md5" 
+
+	rsync -Lv "!{samples.externalSampleID}.cnv.excluded_intervals.bed.gz" "!{samples.projectResultsDir}/variants/cnv/"
+	rsync -Lv "!{samples.externalSampleID}.cnv.gff3" "!{samples.projectResultsDir}/variants/cnv/"
+	
+
 fi 
+
 if [[ -e "!{samples.externalSampleID}.target.counts.gz" ]]
 then
 	rsync -Lv "!{samples.externalSampleID}"*target.counts* "!{samples.projectResultsDir}/variants/cnv/"
