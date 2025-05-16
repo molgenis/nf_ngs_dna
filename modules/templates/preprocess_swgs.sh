@@ -50,7 +50,11 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.sv.vcf.gz" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}.sv.vcf.gz"* "!{samples.projectResultsDir}/variants/sv/"
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.sv.vcf.gz" -o "!{samples.externalSampleID}.sv.reheadered.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.sv.reheadered.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.sv.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/sv/!{samples.externalSampleID}.sv.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.sv.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/sv/!{samples.externalSampleID}.sv.vcf.gz.tbi"
+
 fi
 
 #
