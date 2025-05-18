@@ -22,7 +22,8 @@ fi
 echo -e "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" > "!{samples.externalSampleID}.newVCFHeader.txt"
 
 bcftools annotate -x 'FORMAT/AF,FORMAT/F1R2,FORMAT/F2R1,FORMAT/GP' "!{samples.externalSampleID}.hard-filtered.vcf.gz" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf"
-bgzip -c -f "!{samples.externalSampleID}.variant.calls.genotyped.vcf" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
+bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.variant.calls.genotyped.vcf" -o "!{samples.externalSampleID}.variant.calls.reheadered.genotyped.vcf"
+bgzip -c -f "!{samples.externalSampleID}.variant.calls.reheadered.genotyped.vcf" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 tabix -p vcf "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 rsync -Lv "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"* "!{samples.projectResultsDir}/variants/"
 
@@ -66,7 +67,11 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.sv.vcf.gz" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}.sv.vcf.gz"* "!{samples.projectResultsDir}/variants/sv/"
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.sv.vcf.gz" -o "!{samples.externalSampleID}.sv.reheadered.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.sv.reheadered.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.sv.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/sv/!{samples.externalSampleID}.sv.vcf.gz"
+	rsync -v "!{samples.externalSampleID}.sv.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/sv/!{samples.externalSampleID}.sv.vcf.gz.tbi"
+
 fi
 
 #
