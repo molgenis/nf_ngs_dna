@@ -135,7 +135,7 @@ then
 fi
 if [[ -e "sv" ]]
 then
-	rsync -Lv "sv" "!{samples.projectResultsDir}/qc/sv_!{samples.externalSampleID}"
+	rsync -Lrv "sv" "!{samples.projectResultsDir}/qc/sv_!{samples.externalSampleID}"
 fi
 
 #

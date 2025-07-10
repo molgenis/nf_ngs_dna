@@ -1,25 +1,20 @@
-#!/bin/bash
 
-set -o pipefail
-set -eu
 rawdata=$(basename "!{params.samplesheet}" '.csv') 
 
-
 lines=()
-lines=( $(awk 'BEGIN {FS=","}{if (NR>1){print $2}}' "!{fastq_list}" | sort | uniq) )
-
+lines=( $(awk 'BEGIN {FS=","}{if (NR>1){print $2}}' 'fastq_list.csv' | sort | uniq) )
 
 for i in "${lines[@]}"
 do
-	firstHit=$(grep "${i}" "!{fastq_list}" | head -1)
-	rgid=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $1}')
-	sampleId=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $2}')
-	r1=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $5}')
-	r2=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $6}')
 
-	echo -e "firstHit=${firstHit}\nrgid=${rgid}\nsampleId=${sampleId}\nr1=${r1}\nr2=${r2}"
+firstHit=$(grep "${i}" "fastq_list.csv" | head -1)
+rgid=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $1}')
+sampleId=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $2}')
+r1=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $5}')
+r2=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $6}')
 
 	mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"
+	mkdir -p -m 0750 "!{params.intermediateDir}/${rawdata}"
 	
 	dragen -f \
 	--enable-duplicate-marking true \
@@ -45,34 +40,15 @@ do
 	--vc-enable-gatk-acceleration false \
 	--vc-ml-enable-recalibration false \
 	--high-coverage-support-mode true
-done	
+done
 
 rsync -v "!{params.samplesheet}" "!{params.resultsDir}/${rawdata}/"
 touch stats.tsv
 cp stats.tsv "!{params.resultsDir}/${rawdata}/Analysis/"
 
-declare -a sampleSheetColumnNames=()
-declare -A sampleSheetColumnOffsets=()
-declare    sampleSheetFieldIndex
-declare    sampleSheetFieldValueCount
 
-IFS="," read -r -a sampleSheetColumnNames <<< "$(head -1 !{params.samplesheet})"
-for (( offset = 0 ; offset < ${#sampleSheetColumnNames[@]} ; offset++ ))
-do
-	columnName="${sampleSheetColumnNames[${offset}]}"
-	sampleSheetColumnOffsets["${columnName}"]="${offset}"
 
-done
-
-if [[ -n "${sampleSheetColumnOffsets['externalSampleID']+isset}" ]]; then
-  externalSampleIDFieldIndex=$((${sampleSheetColumnOffsets['externalSampleID']} + 1))
-fi
-
-if [[ -n "${sampleSheetColumnOffsets['project']+isset}" ]]; then
-  projectIDFieldIndex=$((${sampleSheetColumnOffsets['project']} + 1))
-fi
-
-projectName=$(awk -v pIndex=${projectIDFieldIndex} 'BEGIN {FS=","}{if(NR>1){print $pIndex}}' "!{params.samplesheet}" | sort -u)
+projectName=$(awk -v pIndex=${projectFieldIndex} 'BEGIN {FS=","}{if(NR>1){print $pIndex}}' "!{params.samplesheet}" | sort -u)
 
 head -1 "!{params.samplesheet}" > "${projectName}.csv"
 awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "${projectName}.csv.tmp"

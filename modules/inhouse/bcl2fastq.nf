@@ -14,6 +14,9 @@ process bcl2fastq {
   rawdata=$(basename "!{params.samplesheet}" '.csv')
   rm -rf "!{params.intermediateDir}/${rawdata}"
 	mkdir -p -m 0750 "!{params.intermediateDir}/${rawdata}"
+  
+  ls "!{params.sequencersDir}/${rawdata}/"
+  
 	if dragen -f --bcl-conversion-only true --bcl-input-directory "!{params.sequencersDir}/${rawdata}/"  --output-directory "!{params.intermediateDir}/${rawdata}"  --sample-sheet "!{illuminaSamplesheet}"
   then
   
