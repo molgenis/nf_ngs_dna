@@ -12,25 +12,21 @@ dragen  -f \
 --output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
 --output-file-prefix "${sampleId}" \
 --watchdog-active-timeout 360 -r "!{params.referenceDir}" \
---intermediate-results-dir "!{params.intermediateDir}/${rawdata}/"
-# --enable-duplicate-marking true \
-# --enable-map-align-output true \
-# --enable-bam-indexing true \
-# --read-trimmers polyg,quality,adapter \
-# --soft-read-trimmers none \
-# --trim-adapter-read1 /opt/edico/config/adapter_sequences.fasta \
-# --trim-adapter-read2 /opt/edico/config/adapter_sequences.fasta \
-# --trim-min-quality 20 \
-# --trim-min-length 20 \
+--intermediate-results-dir "!{params.intermediateDir}/${rawdata}/" \
+--enable-duplicate-marking true \
+--enable-map-align-output true \
+--enable-bam-indexing true \
+--read-trimmers polyg,quality,adapter \
+--soft-read-trimmers none \
+--trim-adapter-read1 /opt/edico/config/adapter_sequences.fasta \
+--trim-adapter-read2 /opt/edico/config/adapter_sequences.fasta \
+--trim-min-quality 20 \
+--trim-min-length 20 \
+--enable-variant-caller true \
+--vc-emit-ref-confidence GVCF \
+--vc-enable-vcf-output true \
+--vc-enable-gatk-acceleration false \
+--vc-ml-enable-recalibration false \
+--high-coverage-support-mode true
 
-# 
-# --intermediate-results-dir "!{params.intermediateDir}/${rawdata}/" \
-
-# --enable-variant-caller true \
-# --vc-emit-ref-confidence GVCF \
-# --vc-enable-vcf-output true \
-# --vc-enable-gatk-acceleration false \
-# --vc-ml-enable-recalibration false \
-# --high-coverage-support-mode true
-#
 
