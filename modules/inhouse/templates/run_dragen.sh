@@ -21,6 +21,7 @@ do
 
 	mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"
 	
+#	"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
 	dragen -f \
 	--enable-duplicate-marking true \
 	--enable-map-align-output true \
@@ -40,7 +41,6 @@ do
 	--output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
 	--output-file-prefix "${sampleId}" \
 	--enable-variant-caller true \
-	--combine-samples-by-name true \
 	--vc-emit-ref-confidence GVCF \
 	--vc-enable-vcf-output true \
 	--vc-enable-gatk-acceleration false \

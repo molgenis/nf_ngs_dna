@@ -26,6 +26,16 @@ done
 #
 # Get sampleType from sample sheet and check if all samples are of the same type.
 #
+
+barcodeFieldIndex=$((${sampleSheetColumnOffsets['barcode']} + 1))
+dualbarcode='n'
+barcode=$(head -2 "${sampleSheet}" | tail -1 | awk -v a=${barcodeFieldIndex} 'BEGIN {FS=","}{OFS=","}{print $a}')
+echo "barcode=[${barcode}]"
+if [[ "${barcode}" == *"-"* ]]
+then
+	dualbarcode='y'
+fi
+
 sampleType='' # Default.
 externalSampleIDFieldIndex=$((${sampleSheetColumnOffsets['externalSampleID']} + 1))
 laneFieldIndex=$((${sampleSheetColumnOffsets['lane']} + 1))
@@ -35,5 +45,12 @@ barcode2FieldIndex=$((${sampleSheetColumnOffsets['barcode2']} + 1))
 
 echo -e "[Data]\nFCID,Lane,Sample_ID,Index,Index2" > IlluminaSamplesheet.csv
 awk -v e=${externalSampleIDFieldIndex} -v l=${laneFieldIndex} -v f=${flowcellFieldIndex} -v b1=${barcode1FieldIndex} -v b2=${barcode2FieldIndex} 'BEGIN {FS=","}{OFS=","}{if (NR>1){print $f,$l,$e,$b1,$b2}}' "${sampleSheet}" >> IlluminaSamplesheet.csv
+
+if [[ ${dualbarcode} == 'n' ]]
+then
+	echo -e "[Settings]\nOverrideCycles,Y151;I8N1;Y151" >> IlluminaSamplesheet.csv
+
+fi
+
 echo "Illumina samplesheet created: IlluminaSamplesheet.csv"
 rawdata=$(basename "!{params.samplesheet}" '.csv')
