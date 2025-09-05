@@ -22,7 +22,7 @@ if [[ -n "${sampleSheetColumnOffsets['externalSampleID']+isset}" ]]; then
 fi
 
 head -1 "!{params.samplesheet}" > "!{samples.project[0]}.csv"
-awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "!{samples.project[0]}}.csv.tmp"
+awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "!{samples.project[0]}.csv.tmp"
 
 while read line ; do grep "${line}" "!{params.samplesheet}"| head -1 >> "!{samples.project[0]}.csv"; done<"!{samples.project[0]}.csv.tmp"
 

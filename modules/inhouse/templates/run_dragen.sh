@@ -21,6 +21,7 @@ do
 
 	mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"
 	
+#	"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
 	dragen -f \
 	--enable-duplicate-marking true \
 	--enable-map-align-output true \

@@ -20,12 +20,13 @@ include { run_dragen } from './modules/inhouse/run_dragen.nf'
 
 def split_samples(sample) {
     sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"
-    check_fastq(sample.fastqAvailable),
+    check_fastq(sample.fastqAvailable)
     return sample
 }
-def check_fastq(sample)
+def check_fastq(sample){
   if ( sample.fastqAvailable == 'yes'){
     return true
+  }
   else{
     return false
   }

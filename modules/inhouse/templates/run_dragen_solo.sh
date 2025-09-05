@@ -6,7 +6,8 @@ sampleId=$(head -2 'fastq_list.csv' | tail -1 | awk 'BEGIN {FS=","}{print $2}' )
 mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"
 mkdir -p -m 0750 "!{params.intermediateDir}/${rawdata}"
 echo "[${sampleId}]"
-dragen  -f \
+#"/opt/dragen/!{params.dragenVersion}/bin/dragen"  -f \
+dragen -f \
 --fastq-list fastq_list.csv \
 --fastq-list-sample-id "${sampleId}" \
 --output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
@@ -28,5 +29,3 @@ dragen  -f \
 --vc-enable-gatk-acceleration false \
 --vc-ml-enable-recalibration false \
 --high-coverage-support-mode true
-
-
