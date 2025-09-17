@@ -28,4 +28,6 @@ dragen -f \
 --vc-enable-vcf-output true \
 --vc-enable-gatk-acceleration false \
 --vc-ml-enable-recalibration false \
+--qc-coverage-region-1 /staging/development/bed/Exoom_v3.merged.bed \
+--qc-coverage-reports-1 cov_report \
 --high-coverage-support-mode true

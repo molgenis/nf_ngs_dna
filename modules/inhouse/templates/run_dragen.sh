@@ -9,16 +9,8 @@ lines=()
 lines=( $(awk 'BEGIN {FS=","}{if (NR>1){print $2}}' "!{fastq_list}" | sort | uniq) )
 
 
-for i in "${lines[@]}"
+for sampleId in "${lines[@]}"
 do
-	firstHit=$(grep "${i}" "!{fastq_list}" | head -1)
-	rgid=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $1}')
-	sampleId=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $2}')
-	r1=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $5}')
-	r2=$(echo "${firstHit}" | awk 'BEGIN {FS=","}{print $6}')
-
-	echo -e "firstHit=${firstHit}\nrgid=${rgid}\nsampleId=${sampleId}\nr1=${r1}\nr2=${r2}"
-
 	mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"
 	
 #	"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
@@ -32,10 +24,8 @@ do
 	--trim-adapter-read2 /opt/edico/config/adapter_sequences.fasta \
 	--trim-min-quality 20 \
 	--trim-min-length 20 \
-	-1 "${r1}" \
-	-2 "${r2}" \
-	--RGID "${rgid}" \
-	--RGSM "${sampleId}" \
+    --fastq-list-sample-id "${sampleId}" \
+    --fastq-list fastq_list.csv \
 	--watchdog-active-timeout 3600 -r "!{params.referenceDir}" \
 	--intermediate-results-dir "!{params.intermediateDir}/${rawdata}/" \
 	--output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
@@ -45,6 +35,8 @@ do
 	--vc-enable-vcf-output true \
 	--vc-enable-gatk-acceleration false \
 	--vc-ml-enable-recalibration false \
+	--qc-coverage-region-1 /staging/development/bed/Exoom_v3.merged.bed \
+	--qc-coverage-reports-1 cov_report \
 	--high-coverage-support-mode true
 done	
 
