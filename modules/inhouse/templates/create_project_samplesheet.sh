@@ -27,3 +27,4 @@ awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "
 while read line ; do grep "${line}" "!{params.samplesheet}"| head -1 >> "!{samples.project[0]}.csv"; done<"!{samples.project[0]}.csv.tmp"
 
 rsync -v "!{samples.project[0]}.csv" "!{params.tmpDataDir}/Samplesheets/POST_DRAGEN/"
+touch "!{params.tmpDataDir}/logs/${rawdata}/run01.demultiplexing.finished"
