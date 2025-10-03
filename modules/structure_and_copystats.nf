@@ -1,7 +1,7 @@
 process structure_and_copystats{
 
 input: 
-tuple val(samples), path(files)
+  tuple val(samples), path(files)
 
 output: 
   val(samples)

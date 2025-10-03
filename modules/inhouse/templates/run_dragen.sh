@@ -65,11 +65,11 @@ if [[ -n "${sampleSheetColumnOffsets['project']+isset}" ]]; then
   projectIDFieldIndex=$((${sampleSheetColumnOffsets['project']} + 1))
 fi
 
-projectName=$(awk -v pIndex=${projectIDFieldIndex} 'BEGIN {FS=","}{if(NR>1){print $pIndex}}' "!{params.samplesheet}" | sort -u)
-
-head -1 "!{params.samplesheet}" > "${projectName}.csv"
-awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "${projectName}.csv.tmp"
-
-while read line ; do grep "${line}" "!{params.samplesheet}"| head -1 >> "${projectName}.csv"; done<"${projectName}.csv.tmp"
-
-rsync -v "${projectName}.csv" "!{params.tmpDataDir}/Samplesheets/POST_DRAGEN/"
+# projectName=$(awk -v pIndex=${projectIDFieldIndex} 'BEGIN {FS=","}{if(NR>1){print $pIndex}}' "!{params.samplesheet}" | sort -u)
+#
+# head -1 "!{params.samplesheet}" > "${projectName}.csv"
+# awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "${projectName}.csv.tmp"
+#
+# while read line ; do grep "${line}" "!{params.samplesheet}"| head -1 >> "${projectName}.csv"; done<"${projectName}.csv.tmp"
+#
+# rsync -v "${projectName}.csv" "!{params.tmpDataDir}/Samplesheets/POST_DRAGEN/"

@@ -9,8 +9,6 @@ process bcl2fastq {
 
   shell:
   
-  fastq_list='fastq_list.csv'
-  
   template 'bcl2fastq.sh'
 
 }

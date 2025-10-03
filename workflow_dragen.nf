@@ -15,7 +15,7 @@ log.info """\
 include { create_illumina_samplesheet } from './modules/inhouse/create_illumina_samplesheet.nf'
 include { bcl2fastq } from './modules/inhouse/bcl2fastq.nf'
 include { run_dragen } from './modules/inhouse/run_dragen.nf'
-
+include { create_project_samplesheet } from './modules/inhouse/create_project_samplesheet'
 
 
 def split_samples(sample) {
@@ -43,6 +43,8 @@ workflow {
 
 	fastq_processed
 	| run_dragen
+	| create_project_samplesheet
+  
 
 }
 

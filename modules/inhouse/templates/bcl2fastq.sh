@@ -1,6 +1,6 @@
 rawdata=$(basename "!{params.samplesheet}" '.csv')
 rm -rf "!{params.intermediateDir}/${rawdata}"
-mkdir -p -m 0755 "!{params.intermediateDir}/${rawdata}"
+mkdir -p -m 0775 "!{params.intermediateDir}/${rawdata}"
 
 if dragen -f --bcl-conversion-only true --bcl-input-directory "!{params.sequencersDir}/${rawdata}/"  --output-directory "!{params.intermediateDir}/${rawdata}"  --sample-sheet "!{illuminaSamplesheet}"
 then

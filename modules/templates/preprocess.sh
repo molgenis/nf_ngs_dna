@@ -35,7 +35,7 @@ then
 	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.hard-filtered.gvcf.gz" -o "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
 	tabix -p vcf "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
 	md5sum "!{samples.externalSampleID}.hard-filtered.g.vcf.gz" > "!{samples.externalSampleID}.hard-filtered.g.vcf.gz.md5"
-	rsync -v "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
+	rsync -v "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"{,.tbi,.md5} "!{samples.projectResultsDir}/variants/gVCF/"
 fi
 #
 ## alignment
