@@ -1,6 +1,10 @@
 process run_dragen {
   label 'run_dragen'
+  
   input: 
+  path(fastq_list)
+  
+  output:
   path(fastq_list)
 
   shell:

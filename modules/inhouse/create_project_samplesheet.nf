@@ -1,12 +1,9 @@
 process create_project_samplesheet {
   maxForks 1
-
+  
   input: 
-  tuple val(samples), path(fastqList)
+  path(fastq_list)
 
   shell:
-
-  
-
 	template 'create_project_samplesheet.sh'
 }

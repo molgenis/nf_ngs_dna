@@ -5,10 +5,8 @@ process run_dragen_solo {
   tuple val(samples), path(fastqList)
   
   output:
-  tuple val(samples), path(fastqList)
-  shell:
-
+  path(fastqList)
   
-
+  shell:
 	template 'run_dragen_solo.sh'
 }
