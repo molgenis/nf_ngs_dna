@@ -5,9 +5,9 @@ process run_dragen {
   path(fastq_list)
   
   output:
-  path(fastq_list)
+  val(x)
 
   shell:
-
+    x="dummy"
 	template 'run_dragen.sh'
 }
