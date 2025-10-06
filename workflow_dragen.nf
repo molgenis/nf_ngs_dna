@@ -43,8 +43,10 @@ workflow {
 
 	fastq_processed
 	| run_dragen
-	| create_project_samplesheet
-  
+    | set{ ch_processed }
+
+    ch_processed.collect()
+    | create_project_samplesheet
 
 }
 
