@@ -1,6 +1,6 @@
 process preprocess_inhouse {
 
-  module = ['BEDTools/2.30.0-GCCcore-11.3.0','HTSlib/1.16-GCCcore-11.3.0','BCFtools/1.16-GCCcore-11.3.0']
+  module = ['BEDTools/2.30.0-GCCcore-11.3.0','HTSlib/1.16-GCCcore-11.3.0','BCFtools/1.16-GCCcore-11.3.0','PythonPlus/3.10.4-GCCcore-11.3.0-v23.01.2']
 
   input: 
     tuple val(samples), path(files), path(concordanceCheckCallsVcf)
