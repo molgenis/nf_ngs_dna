@@ -25,22 +25,29 @@ def find_file(sample) {
     return sample
 }
 
+Channel
+    .fromPath(params.samplesheet)
+    .splitCsv(header: true)
+    .collect()
+    .flatMap { all_rows ->
+        def grouped = all_rows.groupBy { it.externalSampleID }
+        grouped.collect { sampleID, records ->
+            def sample = records[0]
+            def updated = find_file(sample)
+            [ updated, updated.files ]
+        }
+    }
+    .set { ch_input }
+
 workflow {
-  Channel.fromPath(params.samplesheet)
-  | splitCsv(header:true)
-  | map { find_file(it) }
-  | map { samples -> [ samples, samples.files ]}
-  | set { ch_input }
-
-  ch_input.collect()
-  | structure_and_copystats
-
-  ch_input
-  | forcedcalls_inhouse
-  | preprocess_inhouse
-  | set{ch_processed}
-  
-  ch_processed
-  | coverage
-  
+    ch_input.collect() 
+	| structure_and_copystats
+    
+	ch_input
+	| forcedcalls_inhouse
+	| preprocess_inhouse
+	| set{ch_processed}
+	
+	ch_processed
+	| coverage
 }

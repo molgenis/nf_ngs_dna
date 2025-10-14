@@ -30,10 +30,8 @@ then
 	rename ".gvcf.gz" ".g.vcf.gz" "!{samples.externalSampleID}.hard-filtered.gvcf.gz"*
 	
 	rsync -Lv "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
-	zcat "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf.gz" > "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf"
-	bgzip -c -f "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf" > "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
-	tabix -p vcf "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
 	python "${EBROOTNF_NGS_DNA}/scripts/umcg_nx_cnv2vcf_gatk_transform_v01.py" -i "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
+
 fi
 #
 ## alignment
