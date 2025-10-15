@@ -31,9 +31,9 @@ sort -V projects.txt | uniq > uniqprojects.csv
 while read project
 do
 	head -1 "!{params.samplesheet}" > "${project}.csv"
-	awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "${project}.uniquesamples"
-	while read line ; do grep "${line}" "!{params.samplesheet}"| head -1 >> "${project}.csv"; done<"${project}.uniquesamples"
-	
+#	awk -v eIndex=${externalSampleIDFieldIndex} -F',' '{if (NR>1){print $eIndex}}' "!{params.samplesheet}" | sort -u > "${project}.uniquesamples"
+	#while read line ; do grep "${line}" "!{params.samplesheet}"| head -1 >> "${project}.csv"; done<"${project}.uniquesamples"
+	grep "${project}" "!{params.samplesheet}" >> "${project}.csv"
 	rsync -v "${project}.csv" "!{params.tmpDataDir}/Samplesheets/POST_DRAGEN/"
 done< uniqprojects.csv
 
