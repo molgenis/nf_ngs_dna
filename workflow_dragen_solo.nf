@@ -22,11 +22,19 @@ def find_file(sample) {
 }
 
 workflow {
-  Channel.fromPath(params.samplesheet)
-  | splitCsv(header:true)
-  | map { find_file(it) }
-  | map { samples -> [ samples, samples.externalSampleID ]}
-  | groupTuple (by: 1)
+  Channel
+  .fromPath(params.samplesheet)
+      .splitCsv(header:true)
+	  .map { find_file(it) }
+      .collect()   
+      .flatMap { rows ->
+          rows
+            .groupBy { it.externalSampleID }
+            .collect { sampleID, recs -> [ recs, sampleID ]}
+      }
+      .set { ch_samples }
+	  
+  ch_samples
   | prepare_fastqlist
   | run_dragen_solo
   | set{ch_processed}
