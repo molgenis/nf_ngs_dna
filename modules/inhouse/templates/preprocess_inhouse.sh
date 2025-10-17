@@ -3,7 +3,9 @@
 set -o pipefail
 set -eu
 
-bedfile="!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed"
+capturing=$(echo "!{samples.capturingKit}" | awk 'BEGIN {FS="/"}{print $2}')
+
+bedfile="!{params.dataDir}/Agilent/${capturing}/human_g1k_v37/captured.merged.bed"
 
 if [[ "!{samples.build}" == "GRCh38" ]]
 then
@@ -16,7 +18,8 @@ bcftools annotate -x 'FORMAT/AF,FORMAT/F1R2,FORMAT/F2R1,FORMAT/GP' "!{samples.ex
 bgzip -c -f "!{samples.externalSampleID}.variant.calls.genotyped.vcf" > "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 tabix -p vcf "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"
 rsync -Lv "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz"* "!{samples.projectResultsDir}/variants/"
-
+bedtools intersect -header -a "!{samples.externalSampleID}.variant.calls.genotyped.vcf.gz" -b ${bedfile} | bgzip > "!{samples.projectResultsDir}/variants/!{samples.externalSampleID}.captured.vcf.gz"
+tabix -p vcf "!{samples.projectResultsDir}/variants/!{samples.externalSampleID}.captured.vcf.gz"
 
 if [[ -e "!{samples.externalSampleID}.cnv.igv_session.xml" ]]
 then
