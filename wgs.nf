@@ -27,7 +27,7 @@ def find_file(sample) {
     sample.files = file(path+"/*")
 
     sample.analysisFolder=params.tmpDataDir + batch + "/Analysis/"
-    sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"+sample.project+"/run01/results/"
+    sample.projectResultsDir=params.tmpDataDir+"/projects/POST_DRAGEN/"+sample.project+"/run01/results/"
     sample.combinedIdentifier= file(path).getBaseName()
 
     return sample

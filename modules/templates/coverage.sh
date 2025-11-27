@@ -34,3 +34,20 @@ awk 'BEGIN{OFS="\t"}{if (NR>1){print (NR-1),$1,$2+1,$3,$8,$4,$12,"CDS","1"}else{
 grep -v "NC_001422.1" "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt" > "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt.tmp"
 echo "phiX is removed for !{samples.externalSampleID}.${outputName}.coveragePerTarget" 
 mv -v "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt.tmp" "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt"
+
+rsync -v "!{samples.externalSampleID}.incl_TotalAvgCoverage_TotalPercentagebelow10x.txt" "!{samples.projectResultsDir}/coverage/"
+rsync -v "${outputFile}" "!{samples.projectResultsDir}/coverage/"
+
+if [[ "!{samples.Gender}" == "Male" ]]
+then
+	mkdir -p "!{samples.projectResultsDir}/coverage/male/"
+	rsync -v "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt" "!{samples.projectResultsDir}/coverage/male/"
+elif [[ "!{samples.Gender}" == "Female" ]]
+then
+	mkdir -p "!{samples.projectResultsDir}/coverage/female/"
+	rsync -v "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt" "!{samples.projectResultsDir}/coverage/female/"
+	
+else
+	mkdir -p "!{samples.projectResultsDir}/coverage/unknown/"
+	rsync -v "!{samples.externalSampleID}.${outputName}.coveragePerTarget.txt" "!{samples.projectResultsDir}/coverage/unknown/"
+fi
