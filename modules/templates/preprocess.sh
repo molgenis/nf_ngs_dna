@@ -144,8 +144,12 @@ fi
 if [[ -e "!{samples.externalSampleID}.smn.tsv" ]]
 then
 	rsync -Lv "!{samples.externalSampleID}.smn.tsv"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+fi
+if [[ -e "!{samples.externalSampleID}.gba.tsv" ]]
+then
 	rsync -Lv "!{samples.externalSampleID}.gba.tsv"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+fi
+if [[ -e "!{samples.externalSampleID}.repeats.vcf" ]]
+then
 	rsync -Lv "!{samples.externalSampleID}.repeats.vcf"* "!{samples.projectResultsDir}/variants/additional_analysis/"
 fi
-
-
