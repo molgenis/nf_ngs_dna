@@ -42,7 +42,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
-	for i in "!{samples.externalSampleID}.bam"*
+	for i in "!{samples.externalSampleID}."*bam*
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
@@ -54,7 +54,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.cram" ]]
 then
-	for i in "!{samples.externalSampleID}.cram"*
+	for i in "!{samples.externalSampleID}."*cram*
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
@@ -141,11 +141,15 @@ fi
 #
 ## additional_analysis
 #
-if [[ -e "!{samples.externalSampleID}.smn.tsv" ]]
+if [[ -e "!{samples.externalSampleID}.targeted.json" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}.smn.tsv"* "!{samples.projectResultsDir}/variants/additional_analysis/"
-	rsync -Lv "!{samples.externalSampleID}.gba.tsv"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+	rsync -Lv "!{samples.externalSampleID}.targeted.json"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+fi
+if [[ -e "!{samples.externalSampleID}.targeted.vcf.gz" ]]
+then
+	rsync -Lv "!{samples.externalSampleID}.targeted.vcf.gz"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+fi
+if [[ -e "!{samples.externalSampleID}.repeats.vcf" ]]
+then
 	rsync -Lv "!{samples.externalSampleID}.repeats.vcf"* "!{samples.projectResultsDir}/variants/additional_analysis/"
 fi
-
-
