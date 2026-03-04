@@ -143,13 +143,22 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.targeted.json" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}.targeted.json"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+	perl -p -e "s|!{samples.combinedIdentifier}|!{samples.externalSampleID}|g" "!{samples.externalSampleID}.targeted.json" > "!{samples.externalSampleID}.targeted.renamed.json"
+
+	rsync -Lv "!{samples.externalSampleID}.targeted.renamed.json" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.targeted.json"
 fi
 if [[ -e "!{samples.externalSampleID}.targeted.vcf.gz" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}.targeted.vcf.gz"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.targeted.vcf.gz" -o "!{samples.externalSampleID}.targeted.reheadered.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.targeted.reheadered.vcf.gz"
+	rsync -Lv "!{samples.externalSampleID}.targeted.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.targeted.vcf.gz"
+	rsync -Lv "!{samples.externalSampleID}.targeted.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.targeted.vcf.gz.tbi"
 fi
-if [[ -e "!{samples.externalSampleID}.repeats.vcf" ]]
+if [[ -e "!{samples.externalSampleID}.repeats.vcf.gz" ]]
 then
-	rsync -Lv "!{samples.externalSampleID}.repeats.vcf"* "!{samples.projectResultsDir}/variants/additional_analysis/"
+	bcftools reheader -s "!{samples.externalSampleID}.newVCFHeader.txt" "!{samples.externalSampleID}.repeats.vcf.gz" -o "!{samples.externalSampleID}.repeats.reheadered.vcf.gz"
+	tabix -p vcf "!{samples.externalSampleID}.repeats.reheadered.vcf.gz"
+
+	rsync -Lv "!{samples.externalSampleID}.repeats.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.repeats.vcf.gz"
+	rsync -Lv "!{samples.externalSampleID}.repeats.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.repeats.vcf.gz.tbi"
 fi
