@@ -42,7 +42,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
-	for i in "!{samples.externalSampleID}.bam"*
+	for i in "!{samples.externalSampleID}."*bam*
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
@@ -54,7 +54,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.cram" ]]
 then
-	for i in "!{samples.externalSampleID}.cram"*
+	for i in "!{samples.externalSampleID}."*cram*
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
