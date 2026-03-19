@@ -34,7 +34,7 @@ then
 	awk 'BEGIN{OFS="\t"}{if (NR>1){print (NR-1),$1,$2+1,$4,$8,"CDS","1"}else{print "Index\tChr\tChr Position Start\tDescription\tMin Counts\tCDS\tContig"}}' "${outputFilePerBase}" > "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt"
 	grep -v "NC_001422.1" "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt" > "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt.tmp"
 	echo "phiX is removed for !{samples.externalSampleID}.${outputName}.coveragePerBase"
-	awk '{if (NR>1){printf "%s\t%s\t%s\t%s\t%.0f\t%s\t%s\n",$1,$2,$3,$4,$5,$6,$7}else {print $0}}' "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt.tmp" "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt"
+	awk '{if (NR>1){printf "%s\t%s\t%s\t%s\t%.0f\t%s\t%s\n",$1,$2,$3,$4,$5,$6,$7}else {print $0}}' "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt.tmp" > "!{samples.externalSampleID}.${outputName}.coveragePerBase.txt"
 fi
 
 
