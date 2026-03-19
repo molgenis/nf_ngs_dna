@@ -42,7 +42,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
-	for i in "!{samples.externalSampleID}."*bam*
+	for i in "!{samples.externalSampleID}.bam"*
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
@@ -54,7 +54,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.cram" ]]
 then
-	for i in "!{samples.externalSampleID}."*cram*
+	for i in "!{samples.externalSampleID}.cram"*
 	do  
 		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
 	done
@@ -161,4 +161,8 @@ then
 
 	rsync -Lv "!{samples.externalSampleID}.repeats.reheadered.vcf.gz" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.repeats.vcf.gz"
 	rsync -Lv "!{samples.externalSampleID}.repeats.reheadered.vcf.gz.tbi" "!{samples.projectResultsDir}/variants/additional_analysis/!{samples.externalSampleID}.repeats.vcf.gz.tbi"
+fi
+if [[ -e "!{samples.externalSampleID}.repeats.bam" ]]
+then
+	rsync -Lv "!{samples.externalSampleID}.repeats.bam" "!{samples.projectResultsDir}/variants/additional_analysis/"
 fi
