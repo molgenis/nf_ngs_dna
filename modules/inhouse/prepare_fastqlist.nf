@@ -8,16 +8,17 @@ process prepare_fastqlist {
     tuple val(sample_id), path("fastq_list.csv")
 
   script:
-    def header = "RGID,RGSM,RGLB,Lane,Read1File,Read2File"
+    def header = "RGID,RGSM,RGLB,Lane,Read1File,Read2File,capturingKit"
 
     def lines = sample_rows.collect { s ->
         def rgid = "${s.barcodeWithDot}.${s.lane}"
         def rgsm = s.externalSampleID
         def rglb = "UnknownLibrary"
         def lane = s.lane
+        def captKit = s.capturingKit.split('/')[1]
         def read1 = "${params.rawdataDir}/${s.rawdataName}/${s.rawdataName}_L${lane}_${s.barcode}_1.fq.gz"
         def read2 = "${params.rawdataDir}/${s.rawdataName}/${s.rawdataName}_L${lane}_${s.barcode}_2.fq.gz"
-        "${rgid},${rgsm},${rglb},${lane},${read1},${read2}"
+        "${rgid},${rgsm},${rglb},${lane},${read1},${read2},${captKit}"
     }
 
     def csv_content = ([header] + lines).join("\n")
