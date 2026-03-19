@@ -5,8 +5,7 @@ set -eu
 
 rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
 
-echo -e "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" > "!{samples.externalSampleID}.newVCFHeader.txt"
-
+bedfile=!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed
 
 if grep "!{samples.combinedIdentifier}" "!{samples.projectResultsDir}/qc/stats.tsv"
 then	
@@ -20,19 +19,13 @@ then
 	rsync -Lv "!{samples.externalSampleID}.hard-filtered.vcf.gz"* "!{samples.projectResultsDir}/variants/"
 fi
 
+echo -e "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" > "!{samples.externalSampleID}.newVCFHeader.txt"
 
-#
-## alignment
-#
-if [[ -e "!{samples.externalSampleID}.bam" ]]
-then
-	for i in "!{samples.externalSampleID}.bam"*
-	do  
-		echo "[mv $(readlink ${i}) \"!{samples.projectResultsDir}/alignment/]\""
-		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
-	done
-	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
-fi
+
+
+
+
+
 
 #
 ## gVCF
@@ -44,6 +37,20 @@ then
 	md5sum "!{samples.externalSampleID}.hard-filtered.g.vcf.gz" > "!{samples.externalSampleID}.hard-filtered.g.vcf.gz.md5"
 	rsync -v "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
 fi
+
+#
+## alignment
+#
+if [[ -e "!{samples.externalSampleID}.bam" ]]
+then
+	for i in "!{samples.externalSampleID}."*bam*
+	do  
+		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+	done
+	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
+fi
+
+
 
 #
 ## sv

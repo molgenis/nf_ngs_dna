@@ -50,6 +50,9 @@ then
 	if [[ -n "${sampleSheetColumnOffsets['barcode']+isset}" ]]; then
 	  barcodeFieldIndex=$((${sampleSheetColumnOffsets['barcode']} + 1))
 	fi
+	if [[ -n "${sampleSheetColumnOffsets['capturingKit']+isset}" ]]; then
+	  capturingKitFieldIndex=$((${sampleSheetColumnOffsets['capturingKit']} + 1))
+	fi
 
 	echo -e "${externalSampleIDFieldIndex}\t${sequencingStartDateFieldIndex}\t${sequencerFieldIndex}\t${runFieldIndex}\t${flowcellFieldIndex}\t${laneFieldIndex}\t${barcodeFieldIndex}"
 
@@ -70,20 +73,36 @@ then
 		flowcell=$(echo "${line}" | awk -v eIndex="${flowcellFieldIndex}" 'BEGIN {FS=","}{print $eIndex}')
 		lane=$(echo "${line}" | awk -v eIndex="${laneFieldIndex}" 'BEGIN {FS=","}{print $eIndex}')
 		barcode=$(echo "${line}" | awk -v eIndex="${barcodeFieldIndex}" 'BEGIN {FS=","}{print $eIndex}')
+		capturingKit=$(echo "${line}" | awk -v eIndex="${capturingKitFieldIndex}" 'BEGIN {FS=","}{print $eIndex}')
 
-	newFastQfile1="${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode}_1.fq.gz"
-	newFastQfile2="${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode}_2.fq.gz"
+		newFastQfile1="${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode}_1.fq.gz"
+		newFastQfile2="${sequencingStartDate}_${sequencer}_${run}_${flowcell}_L${lane}_${barcode}_2.fq.gz"
+		echo -e "${externalSampleID}\t${sequencingStartDate}\t${sequencer}\t${run}\t${flowcell}\t${lane}\t${barcode}"
 
+		oldFastQfile1=$(find "!{params.rawdataDir}/${rawdata}/" -name ${externalSampleID}*L00${lane}*_R1_*)
+		oldFastQfile2=$(find "!{params.rawdataDir}/${rawdata}/" -name ${externalSampleID}*L00${lane}*_R2_*)
 
-	echo -e "${externalSampleID}\t${sequencingStartDate}\t${sequencer}\t${run}\t${flowcell}\t${lane}\t${barcode}"	
+		mv "${oldFastQfile1}" "!{params.rawdataDir}/${rawdata}/${newFastQfile1}"
+		mv "${oldFastQfile2}" "!{params.rawdataDir}/${rawdata}/${newFastQfile2}"
 
-
-	oldFastQfile1=$(find "!{params.rawdataDir}/${rawdata}/" -name ${externalSampleID}*L00${lane}*_R1_*)
-	oldFastQfile2=$(find "!{params.rawdataDir}/${rawdata}/" -name ${externalSampleID}*L00${lane}*_R2_*) 
-
-	mv "${oldFastQfile1}" "!{params.rawdataDir}/${rawdata}/${newFastQfile1}"
-	mv "${oldFastQfile2}" "!{params.rawdataDir}/${rawdata}/${newFastQfile2}"
 
 	done<"!{params.samplesheet}"
+	count=0
+	while read fastq_list
+	do
+		if [[ "${count}" == 0 ]]
+		then
+			echo "${fastq_list}" > new_fastq_list.csv
+			count=1
+		else
+			extId=$(echo "${fastq_list}" | awk 'BEGIN {FS=","}{print $2}')
+			captKit=$(grep ${extId} "!{params.samplesheet}" | head -1 | awk -v eIndex="${capturingKitFieldIndex}" 'BEGIN {FS=","}{print $eIndex}')
+			captKit=$(echo "${captKit}" | awk 'BEGIN {FS="/"}{print $2}')
+			echo -e "${fastq_list},${captKit}" >> new_fastq_list.csv
+		fi
+	done<fastq_list.csv
+
+	mv 'fastq_list.csv' 'fastq_list.csv.original'
+	mv 'new_fastq_list.csv' 'fastq_list.csv'
 	
 fi
