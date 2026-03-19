@@ -17,6 +17,7 @@ include { preprocess } from './modules/preprocess'
 include { capture_and_reheader } from './modules/capture_and_reheader'
 include { forcedcalls } from './modules/forcedcalls'
 include { coverage } from './modules/coverage'
+include { create_xml } from './modules/create_xml'
 
 def find_file(sample) {
     batch=sample.gsBatch
@@ -50,8 +51,12 @@ workflow {
   | set{ch_processed}
 
   ch_processed
+  | create_xml
+
+  ch_processed
   | capture_and_reheader
   
   ch_processed
   | coverage
+  
 }
