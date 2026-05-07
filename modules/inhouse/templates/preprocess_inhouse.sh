@@ -42,8 +42,13 @@ fi
 if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
 	for i in "!{samples.externalSampleID}.bam"*
-	do  
-		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+	do
+		if [[ -L "${i}" ]]
+		then
+			mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+		else
+			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
+		fi
 	done
 fi
 
@@ -53,8 +58,13 @@ fi
 if [[ -e "!{samples.externalSampleID}.cram" ]]
 then
 	for i in "!{samples.externalSampleID}.cram"*
-	do  
-		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+	do
+		if [[ -L "${i}" ]]
+		then
+			mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+		else
+			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
+		fi
 	done
 fi
 

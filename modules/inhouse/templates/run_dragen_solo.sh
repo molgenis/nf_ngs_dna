@@ -78,3 +78,7 @@ echo "[${sampleId}]"
 --cnv-enable-self-normalization true \
 --high-coverage-support-mode "${highCov}" \
 --repeat-genotype-enable true
+
+
+touch stats.tsv
+cp stats.tsv "!{params.resultsDir}/${rawdata}/Analysis/"

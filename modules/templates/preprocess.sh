@@ -3,6 +3,8 @@
 set -o pipefail
 set -eu
 
+perl -pi -e 's|!{samples.combinedIdentifier}|!{samples.externalSampleID}|' "!{samples.combinedIdentifier}"*.md5*
+
 rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
 
 bedfile=!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed
@@ -44,9 +46,15 @@ if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
 	for i in "!{samples.externalSampleID}.bam"*
 	do  
-		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+		if [[ -L "${i}" ]]
+		then
+			mv $(readlink "${i}") "!{samples.projectResultsDir}/alignment/"
+		else
+			rsync -v ${i} "!{samples.projectResultsDir}/alignment/"
+		fi
+		rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*.bam*
 	done
-	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
+	
 fi
 
 #
@@ -56,7 +64,12 @@ if [[ -e "!{samples.externalSampleID}.cram" ]]
 then
 	for i in "!{samples.externalSampleID}.cram"*
 	do  
-		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+		if [[ -L "${i}" ]]
+		then
+			mv $(readlink "${i}") "!{samples.projectResultsDir}/alignment/"
+		else
+			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
+		fi
 	done
 	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi

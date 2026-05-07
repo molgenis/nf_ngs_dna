@@ -3,6 +3,9 @@
 set -o pipefail
 set -eu
 
+
+perl -pi -e 's|!{samples.combinedIdentifier}|!{samples.externalSampleID}|' "!{samples.combinedIdentifier}"*.md5
+
 rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.combinedIdentifier}"*
 
 bedfile=!{params.dataDir}/!{samples.capturingKit}/human_g1k_v37/captured.merged.bed
@@ -44,8 +47,13 @@ fi
 if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
 	for i in "!{samples.externalSampleID}."*bam*
-	do  
-		mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+	do
+		if [[ -L "${i}" ]]
+		then
+			mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
+		else
+			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
+		fi
 	done
 	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
 fi
