@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Send pull-request
         run: |
+              set -e
+              set -u
+              set -o pipefail
               #
               # In order for this code to work we need:
               #  * The team invited to review the PR must be public.
@@ -69,7 +72,9 @@ jobs:
               #
               # Get modules and their versions from *.nf files.
               #
-              readarray -t modules< <(awk '/module = \[/,/\]/' modules/*.nf \
+              ls -ahl
+              readarray -t modules< <(find ./ -name '*.nf' -print0 \
+                  | xargs -0 awk '/module = \[/,/\]/' \
                   | sed 's/module = //' \
                   | tr -d '[' \
                   | tr -d ']' \
