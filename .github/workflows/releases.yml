@@ -55,7 +55,7 @@ jobs:
               #
               curl -L \
                   --output "${MODULE_NAME}-${MODULE_VERSION}.tar.gz" \
-                  "${{ github.server_url }}/${MODULE_NAME}/archive/refs/tags/${MODULE_VERSION}.tar.gz"
+                  "${{ github.server_url }}/${ORGANISATION}/${MODULE_NAME}/archive/refs/tags/${MODULE_VERSION}.tar.gz"
               CHECKSUM="$(shasum -a 256 "${MODULE_NAME}-${MODULE_VERSION}.tar.gz" | cut -d " " -f 1)"
               tar -xvzf "${MODULE_NAME}-${MODULE_VERSION}.tar.gz"
               #
