@@ -101,10 +101,10 @@ jobs:
               checksums = [('sha256', '${CHECKSUM}')]
 
               dependencies = [
-                  ('BCFtools', '${module_versions['BCFtools']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}'),
-                  ('BEDTools', '${module_versions['BEDTools']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}'),
-                  ('gVCF2BED', '${module_versions['gVCF2BED']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}'),
-                  ('HTSlib', '${module_versions['HTSlib']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}'),
+                  ('BCFtools', '${module_versions['BCFtools']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('BEDTools', '${module_versions['BEDTools']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('gVCF2BED', '${module_versions['gVCF2BED']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('HTSlib', '${module_versions['HTSlib']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
               ]
 
               #
