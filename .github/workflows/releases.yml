@@ -47,7 +47,7 @@ jobs:
               MODULE_NAME_LOWERCASE="${MODULE_NAME,,}"
               MODULE_VERSION="${{ github.ref_name }}"
               TOOLCHAIN_NAME='GCCcore'
-              TOOLCHAIN_VERSION='13.3.0'
+              TOOLCHAIN_VERSION='11.3.0'
               MODULE_SPEC="${MODULE_NAME}/${MODULE_VERSION}-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}"
               EASYCONFIG_PATH="${MODULE_NAME_LOWERCASE:0:1}/${MODULE_NAME}/${MODULE_NAME}-${MODULE_VERSION}-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}.eb"
               #
@@ -74,7 +74,6 @@ jobs:
               for module in "${modules[@]}"; do
                   echo "Found module ${module%%/*} version ${module##*/}"
                   module_versions["${module%%/*}"]="${module##*/}"
-                  echo "${module_versions["${module%%/*}"]}"
               done
               #
               # Clone the remote repository.
@@ -112,10 +111,10 @@ jobs:
               checksums = [('sha256', '${CHECKSUM}')]
 
               dependencies = [
-                  ('BCFtools', '${module_versions['BCFtools']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
-                  ('BEDTools', '${module_versions['BEDTools']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
-                  ('gVCF2BED', '${module_versions['gVCF2BED']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
-                  ('HTSlib', '${module_versions['HTSlib']%${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('BCFtools', '${module_versions['BCFtools']%-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('BEDTools', '${module_versions['BEDTools']%-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('gVCF2BED', '${module_versions['gVCF2BED']%-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
+                  ('HTSlib', '${module_versions['HTSlib']%-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}}'),
               ]
 
               #
