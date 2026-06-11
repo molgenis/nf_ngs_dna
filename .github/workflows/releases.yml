@@ -50,7 +50,32 @@ jobs:
               TOOLCHAIN_VERSION='13.3.0'
               MODULE_SPEC="${MODULE_NAME}/${MODULE_VERSION}-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}"
               EASYCONFIG_PATH="${MODULE_NAME_LOWERCASE:0:1}/${MODULE_NAME}/${MODULE_NAME}-${MODULE_VERSION}-${TOOLCHAIN_NAME}-${TOOLCHAIN_VERSION}.eb"
-              CHECKSUM="$(curl -sL "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz" | shasum -a 256 | cut -d " " -f 1)"
+              #
+              # Download release
+              #
+              curl -L \
+                  --output "${MODULE_NAME}-${MODULE_VERSION}.tar.gz" \
+                  "${{ github.server_url }}/${MODULE_NAME}/archive/refs/tags/${MODULE_VERSION}.tar.gz"
+              CHECKSUM="$(shasum -a 256 "${MODULE_NAME}-${MODULE_VERSION}.tar.gz" | cut -d " " -f 1)"
+              tar -xvzf "${MODULE_NAME}-${MODULE_VERSION}.tar.gz"
+              #
+              # Get modules and their versions from *.nf files.
+              #
+              readarray -t modules< <(find "./${MODULE_NAME}-${MODULE_VERSION}/" -name '*.nf' -print0 \
+                  | xargs -0 awk '/module = \[/,/\]/' \
+                  | sed 's/module = //' \
+                  | tr -d '[' \
+                  | tr -d ']' \
+                  | tr -d "'" \
+                  | tr ',' '\n' \
+                  | tr -d '[:blank:]' \
+                  | sort -u)
+              declare -A module_versions
+              for module in "${modules[@]}"; do
+                  echo "Found module ${module%%/*} version ${module##*/}"
+                  module_versions["${module%%/*}"]="${module##*/}"
+                  echo "${module_versions["${module%%/*}"]}"
+              done
               #
               # Clone the remote repository.
               #
@@ -69,25 +94,6 @@ jobs:
               # Create a new feature branch for the changes.
               #
               git checkout -b "${MODULE_SPEC}"
-              #
-              # Get modules and their versions from *.nf files.
-              #
-              ls -ahl
-              readarray -t modules< <(find ./ -name '*.nf' -print0 \
-                  | xargs -0 awk '/module = \[/,/\]/' \
-                  | sed 's/module = //' \
-                  | tr -d '[' \
-                  | tr -d ']' \
-                  | tr -d "'" \
-                  | tr ',' '\n' \
-                  | tr -d '[:blank:]' \
-                  | sort -u)
-              declare -A module_versions
-              for module in "${modules[@]}"; do
-                  echo "Found module ${module%%/*} version ${module##*/}"
-                  module_versions["${module%%/*}"]="${module##*/}"
-                  echo "${module_versions["${module%%/*}"]}"
-              done
               #
               # Create/update the EasyConfig.
               #
