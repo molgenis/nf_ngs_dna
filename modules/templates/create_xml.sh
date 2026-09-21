@@ -43,6 +43,7 @@ ucscLinkunipDomain=$(cat "/apps/data/nf_ngs_dna/default_link_to_ucsc_unipDomain.
 		<Resource path="${ucscLinkunipDomain}" type="bb"/>
 		<Resource path="${resultsfolderVariants}!{samples.externalSampleID}.hard-filtered.baf.bw" type="bw"/>
 		<Resource path="${resultsfolderAlignment}!{samples.externalSampleID}.bam" type="bam"/>
+		<Resource path="\\\\zkh\appdata\medgen\\${isilonName}\groups\umcg-gd\\${prm}\projects\\!{samples.project}\run01\results\cnv_regions_colored.bed" type="bed"/>
 	</Resources>
 	<Panel height="120" name="DataPanel" width="1901">
 		<Track attributeKey="!{samples.externalSampleID}.hard-filtered.g.vcf.gz" clazz="org.broad.igv.variant.VariantTrack" displayMode="COLLAPSED" featureVisibilityWindow="100000" fontSize="10" groupByStrand="false" id="${resultsfolderVariantsgVCF}!{samples.externalSampleID}.hard-filtered.g.vcf.gz" name="!{samples.externalSampleID}.hard-filtered.g.vcf.gz" siteColorMode="ALLELE_FREQUENCY" visible="true"/>
@@ -81,3 +82,4 @@ ucscLinkunipDomain=$(cat "/apps/data/nf_ngs_dna/default_link_to_ucsc_unipDomain.
 EOH
 
 cp -v "!{samples.externalSampleID}.igv.session.xml"  "!{samples.projectResultsDir}/qc/!{samples.externalSampleID}.igv_session_versie8.xml" 
+cp -v '/apps/data/cnv_regions_colored.bed' "!{samples.projectResultsDir}/"

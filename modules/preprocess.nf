@@ -1,5 +1,5 @@
 process preprocess {
-
+  maxForks 10
   module = ['BEDTools/2.30.0-GCCcore-11.3.0','HTSlib/1.16-GCCcore-11.3.0','BCFtools/1.16-GCCcore-11.3.0']
 
   input: 
