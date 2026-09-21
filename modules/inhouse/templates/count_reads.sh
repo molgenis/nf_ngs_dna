@@ -6,11 +6,11 @@ _count_reads() {
 	local -i _lines=$(zcat "${_fastq}" | wc -l)
 	local -i _reads=$((_lines/4))
 	if [ ${#_reads} -gt "${longest_read_count_length}" ]; then
-		longest_read_count_length=${#_reads}
+		longest_read_count_length="${#_reads}"
 	fi
 
 	if [ ${#_barcode} -gt "${longest_barcode_length}" ]; then
-		longest_barcode_length=${#_barcode}
+		longest_barcode_length="${#_barcode}"
 	fi
 	eval "$3=${_reads}"
 }
