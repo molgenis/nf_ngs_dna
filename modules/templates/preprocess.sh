@@ -52,9 +52,8 @@ then
 		else
 			rsync -v ${i} "!{samples.projectResultsDir}/alignment/"
 		fi
-		rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*.bam*
 	done
-	
+	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/!{samples.combinedIdentifier}"*.bam*
 fi
 
 #
@@ -71,7 +70,7 @@ then
 			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
 		fi
 	done
-	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/"*
+	rename "!{samples.combinedIdentifier}" "!{samples.externalSampleID}" "!{samples.projectResultsDir}/alignment/!{samples.combinedIdentifier}"*.cram*
 fi
 
 

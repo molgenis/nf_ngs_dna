@@ -30,6 +30,7 @@ ref=$(awk -v b=${buildIDFieldIndex} 'BEGIN {FS=","}{if (NR>1){print $b}}' "!{par
 
 for line in "${lines[@]}"
 do
+	highCov="false"
 	sampleId=$(echo "${line}" | awk 'BEGIN {FS="|"}{print $1}')
 	captKit=$(echo "${line}" | awk 'BEGIN {FS="|"}{print $2}')
 	mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"

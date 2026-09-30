@@ -1,9 +1,8 @@
+set -eu
+
 rawdata=$(basename "!{params.samplesheet}" '.csv') 
 
 rsync -v "!{params.samplesheet}" "!{params.resultsDir}/${rawdata}/"
-touch stats.tsv
-cp stats.tsv "!{params.resultsDir}/${rawdata}/Analysis/"
-
 
 ngsDir="!{params.rawdataDir}/${rawdata}"
 echo "creating ${ngsDir}/Info/"
@@ -42,4 +41,3 @@ rsync -v "${nextSeqRunDataDir}/"*"unParameters.xml" "${ngsDir}/Info/"
 
 
 
-touch "!{params.tmpDataDir}/logs/${rawdata}/run01.demultiplexing.finished"
