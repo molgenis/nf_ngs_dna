@@ -37,9 +37,11 @@ fi
 if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
 then
 	rename ".gvcf.gz" ".g.vcf.gz" "!{samples.externalSampleID}.hard-filtered.gvcf.gz"*
-	
+	pathToScript="${EBROOTNF_NGS_DNA}"
+	ml purge
+	ml PythonPlus/3.10.4-GCCcore-11.3.0-v23.01.1
 	rsync -Lv "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"* "!{samples.projectResultsDir}/variants/gVCF/"
-	python "${EBROOTNF_NGS_DNA}/scripts/umcg_nx_cnv2vcf_gatk_transform_v01.py" -i "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
+	python "${pathToScript}/scripts/umcg_nx_cnv2vcf_gatk_transform_v01.py" -i "!{samples.projectResultsDir}/variants/gVCF/!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
 
 fi
 #
@@ -47,15 +49,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.bam" ]]
 then
-	for i in "!{samples.externalSampleID}.bam"*
-	do
-		if [[ -L "${i}" ]]
-		then
-			mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
-		else
-			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
-		fi
-	done
+	rsync -Lv "!{samples.externalSampleID}.bam"* "!{samples.projectResultsDir}/alignment/"
 fi
 
 #
@@ -63,15 +57,7 @@ fi
 #
 if [[ -e "!{samples.externalSampleID}.cram" ]]
 then
-	for i in "!{samples.externalSampleID}.cram"*
-	do
-		if [[ -L "${i}" ]]
-		then
-			mv $(readlink ${i}) "!{samples.projectResultsDir}/alignment/"
-		else
-			rsync -v "${i}" "!{samples.projectResultsDir}/alignment/"
-		fi
-	done
+	rsync -Lv "!{samples.externalSampleID}.cram"* "!{samples.projectResultsDir}/alignment/"
 fi
 
 #
@@ -133,6 +119,8 @@ if [[ -e "sv" ]]
 then
 	rsync -Lv "sv" "!{samples.projectResultsDir}/qc/sv_!{samples.externalSampleID}"
 fi
+
+rsync -Lv "!{samples.externalSampleID}"*metrics* "!{samples.projectResultsDir}/qc/"
 
 #
 ## additional_analysis

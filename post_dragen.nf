@@ -14,6 +14,7 @@ include { structure_and_copystats } from './modules/structure_and_copystats'
 include { forcedcalls_inhouse } from './modules/inhouse/forcedcalls_inhouse'
 include { preprocess_inhouse } from './modules/inhouse/preprocess_inhouse'
 include { coverage } from './modules/coverage'
+include { multiqc } from './modules/multiqc'
 
 def find_file(sample) {
     runPrefix=sample.sequencingStartDate + "_" + sample.sequencer + "_" +sample.run + "_" + sample.flowcell
@@ -42,12 +43,16 @@ Channel
 workflow {
     ch_input.collect() 
 	| structure_and_copystats
-    
-	ch_input
+
+    ch_input
 	| forcedcalls_inhouse
 	| preprocess_inhouse
 	| set{ch_processed}
 	
-	ch_processed
+    ch_processed.collect()
+	| multiqc
+
+    ch_processed
 	| coverage
+
 }
