@@ -41,7 +41,7 @@ workflow {
   | map { samples -> [ samples, samples.files ]}
   | set { ch_input }
 
-  ch_input.collect()
+  ch_input.first()
   | structure_and_copystats
   | process_dragen_trendanalysis
   
