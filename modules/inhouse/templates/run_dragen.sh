@@ -83,8 +83,7 @@ do
 			--cnv-enable-self-normalization false \
 			--repeat-genotype-enable true \
 			--vc-enable-gatk-acceleration false \
-			--cnv-segmentation-mode bed \
-			--cnv-segmentation-bed ${bedfile} \
+			--cnv-segmentation-mode hslm \
 			--cnv-max-percent-zero-samples 100 \
 			--cnv-max-percent-zero-targets 100 \
 			--high-coverage-support-mode "true" \
