@@ -30,7 +30,6 @@ ref=$(awk -v b=${buildIDFieldIndex} 'BEGIN {FS=","}{if (NR>1){print $b}}' "!{par
 
 pangenome='false'
 echo "REFREFREF: ${ref}"
-highCov="false"
 if [[ "${ref}" == 'GRCh38' ]]
 then
 	refDir="!{params.reference_GRCh38}"
@@ -80,7 +79,7 @@ then
 	--cnv-enable-tracks true \
 	--cnv-enable-self-normalization true \
 	--validate-pangenome-reference="${pangenome}" \
-	--high-coverage-support-mode "${highCov}" \
+	--high-coverage-support-mode "true" \
 	--repeat-genotype-enable true \
 	--vc-target-bed "${bedfile}" \ ## turn off in DRAGEN-4.5
 	--qc-coverage-region-1 "${bedfile}" \ ## turn off in DRAGEN-4.5
@@ -119,7 +118,7 @@ else
 	--cnv-enable-tracks true \
 	--cnv-enable-self-normalization true \
 	--validate-pangenome-reference="${pangenome}" \
-	--high-coverage-support-mode "${highCov}" \
+	--high-coverage-support-mode "false" \
 	--repeat-genotype-enable true \
 	--vc-target-bed "${bedfile}" \ ## turn off in DRAGEN-4.5
 	--qc-coverage-region-1 "${bedfile}" \ ## turn off in DRAGEN-4.5
