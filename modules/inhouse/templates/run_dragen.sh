@@ -30,7 +30,7 @@ ref=$(awk -v b=${buildIDFieldIndex} 'BEGIN {FS=","}{if (NR>1){print $b}}' "!{par
 
 for line in "${lines[@]}"
 do
-	highCov="false"
+
 	sampleId=$(echo "${line}" | awk 'BEGIN {FS="|"}{print $1}')
 	captKit=$(echo "${line}" | awk 'BEGIN {FS="|"}{print $2}')
 	mkdir -p "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}"
@@ -50,43 +50,76 @@ do
 		refDir="!{params.referenceDir}"
 		bedfile="/staging/development/bed/${captKit}.bed"
 	fi
-	
+	echo -e "${bedfile}" > "!{params.resultsDir}/${rawdata}/Analysis/bedfile.txt"
 	if [[ "${captKit}" == *"Targeted"* ]]
 	then
-		highCov="true"
-	fi
-	
-	echo -e "${bedfile}" > "!{params.resultsDir}/${rawdata}/Analysis/bedfile.txt"
-#	dragen -f \	
-	"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
-		--enable-map-align-output true \
-		--enable-bam-indexing true \
-		--watchdog-active-timeout 360 -r "${refDir}" \
-		--intermediate-results-dir "!{params.intermediateDir}/${rawdata}/" \
-		--output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
-		--output-file-prefix "${sampleId}" \
-		--trim-adapter-read1 "/opt/dragen/!{params.dragenVersion}/config/adapter_sequences.fasta" \
-		--trim-adapter-read2 "/opt/dragen/!{params.dragenVersion}/config/adapter_sequences.fasta" \
-		--trim-min-quality 20 \
-		--trim-min-length 20 \
-		--read-trimmers polyg,quality,adapter \
-		--soft-read-trimmers none \
-		--enable-duplicate-marking true \
-		--fastq-list fastq_list.csv \
-		--fastq-list-sample-id "${sampleId}" \
-		--enable-variant-caller true \
-		--vc-enable-vcf-output true \
-		--vc-emit-ref-confidence GVCF \
-		--vc-ml-enable-recalibration false \
-		--vc-target-bed "${bedfile}" \
-		--qc-coverage-region-1 "${bedfile}" \
-		--qc-coverage-reports-1 cov_report \
-		--enable-sv true \
-		--enable-cnv true \
-		--cnv-enable-self-normalization true \
-		--high-coverage-support-mode "${highCov}" \
-		--repeat-genotype-enable true \
-		--vc-enable-gatk-acceleration false  ## turn off in DRAGEN-4.5
+		"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
+			--enable-map-align-output true \
+			--enable-bam-indexing true \
+			--watchdog-active-timeout 360 -r "${refDir}" \
+			--intermediate-results-dir "!{params.intermediateDir}/${rawdata}/" \
+			--output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
+			--output-file-prefix "${sampleId}" \
+			--trim-adapter-read1 "/opt/dragen/!{params.dragenVersion}/config/adapter_sequences.fasta" \
+			--trim-adapter-read2 "/opt/dragen/!{params.dragenVersion}/config/adapter_sequences.fasta" \
+			--trim-min-quality 20 \
+			--trim-min-length 20 \
+			--read-trimmers polyg,quality,adapter \
+			--soft-read-trimmers none \
+			--enable-duplicate-marking true \
+			--fastq-list fastq_list.csv \
+			--fastq-list-sample-id "${sampleId}" \
+			--enable-variant-caller true \
+			--vc-enable-vcf-output true \
+			--vc-emit-ref-confidence GVCF \
+			--vc-ml-enable-recalibration false \
+			--vc-target-bed "${bedfile}" \
+			--qc-coverage-region-1 "${bedfile}" \
+			--qc-coverage-reports-1 cov_report \
+			--enable-sv true \
+			--enable-cnv true \
+			--cnv-enable-self-normalization false \
+			--repeat-genotype-enable true \
+			--vc-enable-gatk-acceleration false \
+			--cnv-segmentation-mode hslm \
+			--cnv-max-percent-zero-samples 100 \
+			--cnv-max-percent-zero-targets 100 \
+			--high-coverage-support-mode "true" \
+			--cnv-target-factor-threshold 0
+			
+	else	
+		"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
+			--enable-map-align-output true \
+			--enable-bam-indexing true \
+			--watchdog-active-timeout 360 -r "${refDir}" \
+			--intermediate-results-dir "!{params.intermediateDir}/${rawdata}/" \
+			--output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}" \
+			--output-file-prefix "${sampleId}" \
+			--trim-adapter-read1 "/opt/dragen/!{params.dragenVersion}/config/adapter_sequences.fasta" \
+			--trim-adapter-read2 "/opt/dragen/!{params.dragenVersion}/config/adapter_sequences.fasta" \
+			--trim-min-quality 20 \
+			--trim-min-length 20 \
+			--read-trimmers polyg,quality,adapter \
+			--soft-read-trimmers none \
+			--enable-duplicate-marking true \
+			--fastq-list fastq_list.csv \
+			--fastq-list-sample-id "${sampleId}" \
+			--enable-variant-caller true \
+			--vc-enable-vcf-output true \
+			--vc-emit-ref-confidence GVCF \
+			--vc-ml-enable-recalibration false \
+			--vc-target-bed "${bedfile}" \
+			--qc-coverage-region-1 "${bedfile}" \
+			--qc-coverage-reports-1 cov_report \
+			--enable-sv true \
+			--enable-cnv true \
+			--cnv-enable-self-normalization false \
+			--repeat-genotype-enable true \
+			--vc-enable-gatk-acceleration false \
+			--cnv-segmentation-mode hslm \
+			--cnv-target-factor-threshold 0.05
+			
+		fi
 done	
 
 rsync -v "!{params.samplesheet}" "!{params.resultsDir}/${rawdata}/"

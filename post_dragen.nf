@@ -41,7 +41,7 @@ Channel
     .set { ch_input }
 
 workflow {
-    ch_input.collect() 
+    ch_input.first() 
 	| structure_and_copystats
 
     ch_input

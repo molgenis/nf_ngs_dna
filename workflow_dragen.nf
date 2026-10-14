@@ -46,6 +46,9 @@ workflow {
 	| copyInfo
 	
 	fastq_processed
+	| count_reads
+	
+	fastq_processed
 	| run_dragen
 	| set{ ch_processed }
 
