@@ -50,11 +50,9 @@ do
 		refDir="!{params.referenceDir}"
 		bedfile="/staging/development/bed/${captKit}.bed"
 	fi
-	
+	echo -e "${bedfile}" > "!{params.resultsDir}/${rawdata}/Analysis/bedfile.txt"
 	if [[ "${captKit}" == *"Targeted"* ]]
 	then
-		echo -e "${bedfile}" > "!{params.resultsDir}/${rawdata}/Analysis/bedfile.txt"
-	#	dragen -f \	
 		"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
 			--enable-map-align-output true \
 			--enable-bam-indexing true \
@@ -90,8 +88,6 @@ do
 			--cnv-target-factor-threshold 0
 			
 	else	
-		echo -e "${bedfile}" > "!{params.resultsDir}/${rawdata}/Analysis/bedfile.txt"
-		#	dragen -f \	
 		"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
 			--enable-map-align-output true \
 			--enable-bam-indexing true \
