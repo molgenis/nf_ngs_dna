@@ -17,7 +17,7 @@ include { bcl2fastq } from './modules/inhouse/bcl2fastq.nf'
 include { run_dragen } from './modules/inhouse/run_dragen.nf'
 include { create_project_samplesheet } from './modules/inhouse/create_project_samplesheet.nf'
 include { copyInfo } from './modules/inhouse/copyInfo.nf'
-
+include { count_reads } from './modules/inhouse/count_reads.nf'
 
 def split_samples(sample) {
     sample.projectResultsDir=params.tmpDataDir+"/projects/NGS_DNA/"
