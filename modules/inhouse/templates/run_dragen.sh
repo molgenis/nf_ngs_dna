@@ -78,13 +78,51 @@ do
 			--qc-coverage-reports-1 cov_report \
 			--enable-sv true \
 			--enable-cnv true \
+			--cnv-target-bed "${bedfile}" \
 			--cnv-enable-self-normalization false \
+			--cnv-filter-duplicate-alignments false \
+			--cnv-enable-gcbias-correction false \
+			--cnv-min-mapq 20 \
+			--cnv-count-mapq-zero true \
 			--repeat-genotype-enable true \
 			--vc-enable-gatk-acceleration false \
+			--high-coverage-support-mode "true"
+
+
+		CASE_COUNTS="/groups/umcg-atd/tmp15//results//${rawdata}/Analysis/${sampleId}/${sampleId}.target.counts.gz"
+		FIRST_PON="/staging/development//PanelOfNormal_CNV/targetCounts/19840001_2574354_DNA199404_811394_MAGR793A_3496881_847388_3440010.target.counts.gz"
+
+		# header and put cnv-filter-duplicate-alignments to 0
+		zgrep "^#" "$CASE_COUNTS" | sed 's/cnv-filter-duplicate-alignments=1/cnv-filter-duplicate-alignments=0/g' > case_header.txt
+
+		# get data 
+		zgrep -v "^#" "$CASE_COUNTS" > case_data.txt
+
+		# match PoN regions with case
+		zgrep -v "^#" "$FIRST_PON" | awk -F'\t' 'NR==FNR{c[FNR]=$5; d[FNR]=$6; next} {print $1"\t"$2"\t"$3"\t"$4"\t"c[FNR]"\t"d[FNR]}' case_data.txt - > case_data_matched.txt
+
+		# put everything together
+		cat case_header.txt case_data_matched.txt | gzip > "${CASE_COUNTS}.fixed.gz"
+		mv "${CASE_COUNTS}.fixed.gz" "$CASE_COUNTS"
+
+		#clean up tmp files
+		rm case_header.txt case_data.txt case_data_matched.txt
+		## CNV Refinement
+		"/opt/dragen/!{params.dragenVersion}/bin/dragen" -f \
+			-r "${refDir}" \
+			--output-directory "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}/" \
+			--output-file-prefix "${sampleId}" \
+			--enable-map-align false \
+			--enable-cnv true \
+			--cnv-target-bed "${bedfile}" \
+			--cnv-input "!{params.resultsDir}/${rawdata}/Analysis/${sampleId}/${sampleId}.target.counts.gz" \
+			--cnv-enable-self-normalization false \
+			--cnv-normals-list "!{params.cnvNormalsList}" \
+			--cnv-enable-gcbias-correction false \
+			--cnv-enable-ref-calls false \
 			--cnv-segmentation-mode hslm \
 			--cnv-max-percent-zero-samples 100 \
 			--cnv-max-percent-zero-targets 100 \
-			--high-coverage-support-mode "true" \
 			--cnv-target-factor-threshold 0
 			
 	else	
@@ -125,4 +163,5 @@ done
 rsync -v "!{params.samplesheet}" "!{params.resultsDir}/${rawdata}/"
 touch stats.tsv
 cp stats.tsv "!{params.resultsDir}/${rawdata}/Analysis/"
+
 
