@@ -31,7 +31,5 @@ if [[ -e "!{samples.externalSampleID}.hard-filtered.gvcf.gz" ]]
 then
 	rename ".gvcf.gz" ".g.vcf.gz" "!{samples.externalSampleID}.hard-filtered.gvcf.gz"*
 	pathToScript="${EBROOTNF_NGS_DNA}"
-	ml purge
-	ml PythonPlus/3.10.4-GCCcore-11.3.0-v23.01.1
 	python "${pathToScript}/scripts/umcg_nx_cnv2vcf_gatk_transform_v01.py" -i "!{samples.externalSampleID}.hard-filtered.g.vcf.gz"
 fi

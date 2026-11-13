@@ -3,8 +3,8 @@ import csv
 import gzip
 from contextlib import contextmanager
 from datetime import datetime
+import subprocess
 import sys
-import pysam
 
 
 SAMPLE_DATA_FIELDS = ["GT", "CN", "BC"]
@@ -28,9 +28,9 @@ High Copy Gain CN:4 ./1
 def open_file(filename, mode="r"):
     if "t" not in mode:
         mode += "t"
-        _open = gzip.open if filename.endswith(".gz") else open
-        with _open(filename, mode, encoding="utf-8") as f:
-            yield f
+    _open = gzip.open if filename.endswith(".gz") else open
+    with _open(filename, mode, encoding="utf-8") as f:
+        yield f
 
 
 def parse_arguments():
@@ -39,45 +39,50 @@ def parse_arguments():
     parser.add_argument(
         "-i", help="Input file NxClinical or GATK g.vcf.gz", required=True
     )
-    # parser.add_argument(
-    #     "-o",
-    #     dest="output_path",
-    #     required=True,
-    #     help="output file containing both CNVs and SNVs in VCF format",
-    # )
     return argument_parser.parse_args()
 
 
 def filter_bgzip_vcf(input_vcf_gz, output_vcf_gz, filter_string):
-    # Open the input bgzip-compressed VCF file
-    with pysam.BGZFile(input_vcf_gz, "r") as infile, pysam.BGZFile(
-        output_vcf_gz, "w"
-    ) as outfile:
-        for line in infile:
-            decoded_line = line.decode("utf-8").rstrip("\n")
-            if filter_string not in decoded_line:
-                outfile.write((decoded_line + "\n").encode("utf-8"))
-            else:
-                print(decoded_line)
+    with open(output_vcf_gz, "wb") as out_f:
+        bgzip_proc = subprocess.Popen(
+            ["bgzip", "-c"],
+            stdin=subprocess.PIPE,
+            stdout=out_f,
+            text=True,
+            encoding="utf-8",
+        )
+        with gzip.open(input_vcf_gz, "rt", encoding="utf-8") as infile:
+            for line in infile:
+                if filter_string not in line:
+                    bgzip_proc.stdin.write(line)
+                else:
+                    print(line.rstrip("\n"))
+        bgzip_proc.stdin.close()
+        return_code = bgzip_proc.wait()
+        if return_code != 0:
+            raise RuntimeError(
+                f"bgzip comprimeren is mislukt met exit code {return_code}"
+            )
 
 
 def validate_bgzip_file(file_path):
     try:
-        # Attempt to open the file in read mode.
-        # This will raise an exception if the file is not a valid bgzip file.
-        with pysam.BGZFile(file_path, "r") as infile:
-            # We don't need to read the whole file, just checking that we can
-            # iterate over it without errors is a good validation step.
-            for line in infile:
-                test = True
+        subprocess.run(
+            ["bgzip", "-t", file_path],
+            check=True,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
         print(f"Validation successful: '{file_path}' is a valid bgzip file.")
         return True
-    except Exception as e:
-        # If any exception occurs (e.g., file not found, bad format),
-        # we catch it and report a failure.
-        print(f"Validation failed for '{file_path}': {e}")
+    except subprocess.CalledProcessError as e:
+        print(f"Validation failed for '{file_path}': {e.stderr.strip()}")
         return False
-
+    except FileNotFoundError:
+        print(
+            "Validation failed: 'bgzip' commando niet gevonden. Is de HTSlib module geladen?"
+        )
+        return False
 
 def main():
     args = parse_arguments()
